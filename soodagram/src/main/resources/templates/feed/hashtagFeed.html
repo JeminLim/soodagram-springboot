@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="/include/head :: config" />
+	<link th:href="@{/css/accountStyle.css}" rel="stylesheet" />
+</head>
+<body>
+	<header>
+		<!-- navbar -->
+		<th:block th:replace="/include/navbar :: navbar" />
+	</header>
+	<main>
+		<div class="container-fluid">
+	        <!-- Profile -->
+	        <div class="row">   
+	          <div class="col-md-2"></div>
+	          <div class="userProfile col-md-8">
+	            <div class="col-md-2"></div>
+	            <!-- Profile-img -->      
+	            <div class="col-md-1" style="text-align: center; margin-top: 20px;">            
+	              <i class="fas fa-hashtag fa-lg" style="font-size: 4em;"></i>
+	            </div>
+	            <!-- Profile abstract -->
+	            <div class="col-md-7 container-fluid">
+	              <div class="col-md-12 userInfo">
+	                <p class="profile" style="font-size: 2em" th:text="${hashtagName}">hashtag name</p>
+	                <p class="numFeeds" style="font-size: 1.5em" th:utext="'게시물 <strong>' + ${#lists.size(searchedFeed)} + '</strong>'">게시물</p>                       
+	              </div>
+	            </div>
+	          </div> 
+	        </div>
+	        
+	        
+	        <div class="row">
+	          <div class="col-md-3"></div>
+	          <div class="col-md-8 my-4 feedNavBar">
+	            <span style="color: black; font-size: 1.5em">인기 게시물</span>
+	          </div>
+	        </div>	        
+	       	  <div class="row uploadedFeedRow" th:if="${#lists.size(searchedFeed) > 0}">
+		       	 <div class="container-fluid">
+		       		<div class="col-md-3"> </div>
+		       		<div class="myFeedList col-md-7"> 			
+	        			<div class="col-md-3 myFeedImg" th:each="searchedFeed: ${searchedFeed}">
+	                  		<img class="feedImg" th:src="@{${searchedFeed.fileVO[0].fileName}}"/>      
+	              		</div>     
+	        	  	</div>
+	       	  	 </div>
+	       	  </div>
+	      </div>       
+  	 </main>
+</body>
+</html>

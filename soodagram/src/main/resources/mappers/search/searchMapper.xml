@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace = "com.soodagram.soodagram.mappers.search.SearchMapper">
+
+	<resultMap type="UserVO" id="UserResultMap">
+		<id property="userEmail" column="user_email"/>
+		<result property="userPw" column="user_pw" />
+		<result property="userName" column="user_name"/>
+		<result property="userId" column="user_id"/>
+		<result property="userPhone" column="user_phone"/>
+		<result property="userGender" column="user_gender"/>
+		<result property="userImg" column="user_img"/>
+		<result property="userRegDate" column="user_reg_date"/>
+		<result property="userDesc" column="user_desc"/>		
+	</resultMap>
+
+	<resultMap type="HashtagVO" id="HashtagResultMap">
+		<id property="hashtagNo" column="hashtag_no"/>
+		<result property="hashtagName" column="hashtag_name" />
+		<result property="feed_no" column="feed_no" />
+		<result property="tagCount" column="tag_count"/>
+	</resultMap>
+	
+	
+
+	<select id="searchUser" resultMap="UserResultMap">
+		<![CDATA[
+			SELECT *
+			FROM tbl_user
+			WHERE
+				user_id LIKE CONCAT('%', #{keyword}, '%') OR
+				user_name LIKE CONCAT('%', #{keyword}, '%')		
+		]]>	
+	</select>
+
+	<select id="searchHashtag" resultMap="HashtagResultMap">
+		<![CDATA[
+			SELECT hashtag_name,
+				   COUNT(hashtag_name) as tag_count
+			FROM tbl_hashtag
+			WHERE
+				hashtag_name LIKE CONCAT('%', #{keyword}, '%')
+			GROUP BY
+				hashtag_name
+		]]>	
+	</select>
+
+
+
+</mapper>

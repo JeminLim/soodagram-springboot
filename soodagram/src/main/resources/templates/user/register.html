@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="/include/head :: config" />
+	<link th:href="@{/css/loginStyle.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="text-center">
+					<img th:src="@{/images/soodagram-font-logo.png}" class="instagram-logo">
+						<p class="info">친구들의 사진과 동영상을 보려면 가입하세요.</p>
+						<div class="register-form">											
+							<button type="button" class="btn btn-primary btn-block">
+								<i class="fab fa-facebook-square"></i>
+								<span class="fb-login">Facebook으로 로그인</span>
+							</button>										
+							<p class="or"> 또는 </p>
+							<form th:action="@{/user/regist}" method="post">
+								<div class="form-group">
+									<input type="email" id="userEmail" class="form-control" placeholder="이메일" name="userEmail">
+								</div>
+								<div class="form-group">
+									<input type="text" id="userName" class="form-control" placeholder="성명" name="userName">
+								</div>
+								<div class="form-group">
+									<input type="text" id="userId" class="form-control" placeholder="사용자 이름" name="userId">
+								</div>
+								<div class="form-group">
+									<input type="password" id="userPw" class="form-control" placeholder="비밀번호" name="userPw">
+								</div>
+								<button type="submit" id="submitBtn" class="btn btn-primary btn-block" disabled>
+									가입
+								</button>
+							<div class="inform-polocies">
+								<a href="#" class="to-polocies">
+									가입하면 soodagram의 약관, 데이터 정책 및 쿠키정책에 동의하게 됩니다.
+								</a>		
+							</div>				
+						</form>	
+					</div>	
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="text-center">					
+					<span class="go-to-register">계정이 있으신가요?
+						<a th:href="@{/user/login}" class="register">로그인</a>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script th:src="@{/js/registerJS.js}"></script>
+</html>

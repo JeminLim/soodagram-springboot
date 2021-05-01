@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace = "com.soodagram.soodagram.mappers.feed.FeedMapper">
+	
+	<!-- ResultMap -->
+	<!-- Feed Result Map -->
+	<resultMap id="FeedResultMap" type="FeedVO">
+		<id property="feedNo" column="feed_no"/>
+		<result property="content" column="content" />
+		<result property="regDate" column="reg_date" />
+		<result property="updateDate" column="update_date" />
+		<result property="userEmail" column="user_email" />
+		<result property="totalLike" column="total_like" />
+		<result property="totalReplies" column="total_replies" />
+		<result property="isLike" column="is_like" />
+		<association property="userVO" column="user_email" javaType="UserVO" resultMap="UserResultMap" />
+		<collection property="fileVO" column="feed_no" ofType="FileVO" select="getFeedFile"/>
+	</resultMap>
+	
+	<resultMap id="UserResultMap" type="UserVO">
+		<id property="userEmail" column="user_email"/>
+		<result property="userId" column="user_id"/>
+		<result property="userImg" column="user_img"/>
+	</resultMap>
+	
+	<resultMap id="FileResultMap" type="FileVO">
+		<id property="fileName" column="file_name" />
+		<result property="feedNo" column="feed_no" />
+		<result property="regDate" column="reg_date" />
+	</resultMap>
+	
+	<select id="getFeedFile" resultMap="FileResultMap">
+		SELECT
+			file_name,
+			feed_no,
+			reg_date
+		FROM tbl_feed_img
+		WHERE
+			feed_no = #{feedNo}
+	</select>	
+	
+	<!-- ######################################## Feed SQL ############################################### -->
+	<!-- Feed 등록 -->
+	<insert id="writeFeed" parameterType="FeedVO">		
+		INSERT INTO tbl_feed (
+			content,
+			user_email
+		) VALUES (
+			#{content},
+			#{userEmail}
+		)		
+		<!-- 다른 테이블 참조하기 위해, auto_increment 값을 Insert 한 후, 반환하여 사용할 수 있도록 selectkey 사용 -->
+		<selectKey resultType="int" keyProperty="feedNo" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>		
+	</insert>
+
+	<!-- 본인 피드 정보 받기 -->
+	<select id="getMyFeed" parameterType="UserVO" resultMap="FeedResultMap">
+		SELECT *
+		FROM tbl_feed
+		WHERE
+			user_email = #{userEmail}
+	</select>
+
+	<!-- 팔로잉 하는 유저의 초기 피드 받아오기 -->
+	<select id="getFollowingFeed" resultMap="FeedResultMap">
+		SELECT 
+			tf.feed_no,
+			tf.content,
+			tf.reg_date,
+			tf.update_date,
+			tf.user_email,
+			tu.user_id,
+			tu.user_img,
+			(SELECT COUNT(like_no) FROM tbl_feed_like AS tfl WHERE tfl.feed_no = tf.feed_no) AS total_like,
+			(SELECT COUNT(reply_no) FROM tbl_reply AS tr WHERE tr.feed_no = tf.feed_no) AS total_replies,
+			(SELECT IF(COUNT(user_email) > 0, 1, 0)	FROM tbl_feed_like WHERE feed_no = tf.feed_no AND user_email = #{userVO.userEmail}) as is_like		
+		FROM tbl_feed as tf
+		INNER JOIN tbl_user_follow as tuf
+		ON tf.user_email = tuf.target_user
+		LEFT JOIN tbl_user AS tu
+		ON tf.user_email = tu.user_email
+		WHERE
+			tuf.based_user = #{userVO.userEmail}
+		ORDER BY
+			tf.feed_no DESC, tf.update_date DESC
+		LIMIT #{page}, 6		
+	</select>
+	
+	<!-- 피드 삭제 -->
+	<delete id="deleteFeed" parameterType="int">
+		DELETE FROM tbl_feed
+		WHERE
+			feed_no = #{feedNo}
+	</delete>
+	
+	
+	<!-- 해시태그 검색 피드 찾기 -->
+	<select id="getHashtagFeed" resultMap="FeedResultMap">
+		SELECT *
+		FROM tbl_feed as tf
+		INNER JOIN tbl_hashtag as th
+		ON th.feed_no = tf.feed_no
+		WHERE
+			hashtag_name = #{hashtagName}
+			
+	</select>
+	
+	
+</mapper>

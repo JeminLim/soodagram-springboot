@@ -1,0 +1,108 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #fafafa !important;
+}
+
+.story-container{
+    margin-bottom: 10px;
+    border: 1px solid #BBBBBB;
+    padding: 10px;
+    overflow: auto;
+}
+
+.story-container ul{
+    padding: 5px;
+    margin: 0;     
+}
+
+.story-container ul li{    
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.newsFeed {
+    border: 1px solid #bbbbbb;
+    padding: 10px 0;    
+    margin-bottom: 30px;
+}
+
+.feedImg{
+	display: block;
+	width: 100%;
+	height: auto;
+	max-height: 300px;
+	min-height: 200px;
+}
+
+.authorRow {
+    padding: 10px 0;
+    display: flex;
+}
+
+.authorUser {
+    margin-right: 10px;
+    color: black;
+}
+
+.authorMenu {
+    padding-top: 10px;
+}
+
+.interaction{
+    margin: 10px 0;
+    font-size: 20px;
+}
+
+.interaction i{
+    margin-right: 5px;
+}
+
+.reply {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.reply strong{
+    margin-right: 5px;
+}
+
+.commentForm{
+    display:flex;
+}
+
+.post{
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.postBtn {
+    font-size: 1em;
+    color: rgb(67, 99, 204);
+}
+
+.feedAside {
+    margin-top: 30px;
+}
+
+.suggestions{
+    margin: 20px 0;
+}
+
+.sugUserImg{
+    margin-right: 5px;
+}
+
+.replyPost{
+	padding: 0;
+}
+
+.likeBtn{
+	color: black;
+}

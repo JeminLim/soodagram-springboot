@@ -1,0 +1,142 @@
+@charset "UTF-8";
+.userProfile {
+    margin-top: 30px;
+}
+
+.myFeed{
+  margin-right: 50px;
+}
+
+#icon {
+  margin-right:10px;
+}
+
+.profile{
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.profileIcon{
+    font-size: 0.8em;
+}
+
+.userInfo{
+    margin-bottom: 20px;
+}
+
+.userLog{
+    font-size: 20px;
+}
+
+.list{
+  font-size: small;
+}
+
+.feedNum{
+  margin-right: 20px;
+}
+
+.followBtn{
+  margin-right: 20px;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none;
+}
+
+.userProfile{
+    margin-bottom: 50px;
+}
+
+.feedNavBar{
+    margin-bottom: 30px;
+}
+
+.uploadedFeedRow{
+    margin-bottom: 10px;
+}
+
+.myFeedList{
+    margin-bottom: 10px;
+}
+
+.myFeedImg {
+    margin-right: 10px;
+    padding: 0;
+    margin-bottom: 10px;    
+}
+
+.btnRow {
+	margin-top: 10px;
+	padding-left: 40%;
+}
+
+.feedDelBtn{
+	margin: auto;
+}
+
+.feedImg{
+    width: 100%;
+    height: 200px;
+}
+
+
+.btn-link.text-dark.profile {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: transparent;
+}
+
+.contentInput{
+  width: 100%;
+  height: 150px;
+}
+
+.fileDrop.text-center {
+  height: 150px;
+}
+
+.selectFileBtn{
+    margin-bottom: 20px;
+}
+
+
+.addPeople{
+  font-size: 100px;
+}
+
+.fileDiv{
+	border: 1px solid;
+	height: 210px !important;
+	width: 100% !important;
+	overflow-x: auto;
+	display: flex;
+}
+
+.fileDiv::-webkit-scrollbar{
+	width: 0;
+}
+
+.imgList{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.delBtn {
+	margin-top: 5px;
+	width: 80px;
+	height: 30px;
+}
+
+.text-dark{
+    color: black;
+}
+
+.rounded-circle{
+    border-radius: 50%;
+}
+
+.recommandList{
+    margin-bottom: 10px;
+}
+

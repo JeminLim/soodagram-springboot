@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+        
+<configuration>
+	<typeAliases>
+		 <typeAlias type="com.soodagram.soodagram.user.domain.UserVO" alias="UserVO"/>
+		 <typeAlias type="com.soodagram.soodagram.feed.domain.FeedVO" alias="FeedVO"/>
+		 <typeAlias type="com.soodagram.soodagram.feed.domain.FeedFileVO" alias="FileVO"/>
+		 <typeAlias type="com.soodagram.soodagram.feed.domain.FeedHashtagVO" alias="HashtagVO"/>
+		 <typeAlias type="com.soodagram.soodagram.reply.domain.ReplyVO" alias="ReplyVO" />
+	</typeAliases>
+</configuration>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:fragment="config">
+	    <meta charset="UTF-8" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	    <meta http-equiv="x-ua-compatible" content="ie=edge" />	    
+		<meta name="_csrf" th:content="${_csrf.token}"/>
+		<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+	    <title>soodagram</title>    
+	    <!-- Font Awesome -->
+	    <link rel="stylesheet" th:href="@{https://use.fontawesome.com/releases/v5.11.2/css/all.css}" />
+	    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+	    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+	    <link rel="stylesheet" th:href="@{/css/navStyle.css}"/>  
+	    <script th:src="@{https://code.jquery.com/jquery-1.12.4.min.js}"></script>
+		<script th:src="@{/js/bootstrap.js}"></script>
+		<script th:src="@{/js/bootstrap.min.js}"></script>
+		<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js}"></script>
+		<script>
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			
+			$.ajaxPrefilter(function(options){
+				if(!options.beforeSend) {
+					options.beforeSend = function(xhr) {
+						xhr.setRequestHeader(header, token);
+					}	
+				}				
+			});
+			
+		</script>
+	</th:block>
+</head>
+<body>
+
+</body>
+</html>

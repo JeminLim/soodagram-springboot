@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace = "com.soodagram.soodagram.mappers.feed.FeedLikeMapper">
+	
+	<insert id="insertLike" parameterType="hashMap">
+		INSERT INTO tbl_feed_like (
+			feed_no,
+			user_email
+		) VALUES (
+			#{feedNo},
+			#{userVO.userEmail}
+		)
+	</insert>
+	
+	<delete id="deleteLike" parameterType="hashMap">
+		DELETE FROM tbl_feed_like
+		WHERE
+			feed_no = #{feedNo} AND
+			user_email = #{userVO.userEmail}
+	</delete>
+	
+	<select id="isCancel" parameterType="hashMap" resultType="int">
+		SELECT COUNT(like_no)
+		FROM tbl_feed_like
+		WHERE
+			feed_no = #{feedNo} AND
+			user_email = #{userVO.userEmail}
+	</select>
+	
+	<select id="countLikeNo" parameterType="int" resultType="int">
+		SELECT COUNT(like_no)
+		FROM tbl_feed_like
+		WHERE
+			feed_no = #{feedNo}
+	</select>
+	
+	<select id="likeFeedList" resultType="int">
+		SELECT feed_no
+		FROM tbl_feed_like
+		WHERE
+			user_email = #{userEmail}
+	</select>
+	
+</mapper>

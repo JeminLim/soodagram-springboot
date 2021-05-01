@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<th:block th:fragment="navbar">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	      <div class="container-fluid">
+	          <div class="container">
+	              <div class="row">
+	                  <div class="col-md-2"></div>
+		                  <a href="/" class="col-md-2 logoBtn">
+		                      <img th:src="@{/images/soodagram-font-logo.png}" class="fontLogo" height="30">
+		                  </a>
+	                  <div class="col-md-3">
+	                  	<div class="center">                  	
+	                      <input type="search" class="form-control searchInput" placeholder="검색" id="searchBar" aria-label="Search"/> 
+	                      <div id="searchResult" class="searchResult">
+	                      	
+	                      </div> 
+	                  	</div>                      
+	                  </div>
+	                  <div class="col-md-4">
+	                      <ul class="navbar-nav justify-content-center">
+	                          <!-- Icons -->
+	                          <li class="nav-item">
+	                              <a href="#" class="nav-link">
+	                                  <i class="fas fa-home fa-lg nav-icon"></i>
+	                              </a>
+	                          </li>
+	                          <li class="nav-item">
+	                              <a class="nav-link" href="#">
+	                                <i class="far fa-paper-plane fa-lg nav-icon"></i>
+	                              </a>
+	                            </li>
+	                            <li class="nav-item">
+	                              <a class="nav-link" href="#">
+	                                <i class="far fa-compass fa-lg nav-icon"></i>
+	                              </a>
+	                            </li>
+	                            <li class="nav-item">
+	                              <a class="nav-link" href="#">
+	                                <i class="far fa-heart fa-lg nav-icon"></i>
+	                              </a>
+	                            </li>
+	                            <!-- Avatar -->
+	                            <li class="dropdown">
+	                              <a href="#" class="dropdown-toggle" id="navDropdownMenu" role="button" data-toggle="dropdown" aria-hashpopup="ture" aria-expanded="false">
+	                                <img th:src="@{${session.login.userImg}}" class="rounded-circle" height="25" loading="lazy" />
+	                              </a>
+	                              <ul class="dropdown-menu" aria-labelledby="navDropdownMenu">
+	                                <li><a class="dropdown-item" th:href="@{/user/{userId}(userId = ${session.login.userId})}">프로필</a></li>
+	                                <li><a class="dropdown-item" href="#">설정</a></li>
+	                                <li><a class="dropdown-item" th:href="@{/user/logout}">로그아웃</a></li>
+	                              </ul>
+	                            </li>
+	                      </ul>
+	                  </div>
+	              </div>
+	          </div>
+	      </div>
+		</nav>
+		
+	
+	
+	<script id="resultUserTemplate" type="text/x-handlerbars-template">
+		{{#each searchedUser}}		
+   			<a th:href="@{/user/{{userId}}}" class="searchUserList col-md-12">	
+				<div class="col-md-3 searchedUserImg">		
+					<img th:src="@{{{userImg}}}" class="rounded-circle" height="40" loading="lazy" />		   		
+				</div>
+				<div class="col-md-8">
+					<ul class="justify-content-left">
+						<li>{{userId}}</li>
+						<li>{{userName}}</li>
+					</ul>
+				</div>
+			</a>
+		{{/each}}
+		</script>
+	<script id="resultHashtagTemplate" type="text/x-handlerbars-template">
+		{{#each searchedTag}}
+			<a href="#" class="searchHashtagList col-md-12" onclick="linkToHashtagFeed(this);">	
+				<div class="col-md-3 searchedHashtag">	
+					<i class="fas fa-hashtag fa-lg"></i>
+				</div>
+				<div class="col-md-8">
+					<ul class="justify-content-left">
+						<li>{{hashtagName}}</li>
+						<li>{{tagCount}}</li>
+					</ul>
+				</div>
+				<input type="hidden" value={{hashtagName}} class="hashtagNameVal"/>
+       		 </a>
+		{{/each}}
+	</script>		 
+	<script th:src="@{/js/navbarJS.js}"></script>
+	
+	</th:block>
+		  
+</body>
+</html>

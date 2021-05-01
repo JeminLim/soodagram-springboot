@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="/include/head :: config" />
+	<link th:href="@{/css/accountStyle.css}" rel="stylesheet" />
+</head>
+<body>
+	<header>
+		<!-- navbar -->
+		<th:block th:replace="/include/navbar :: navbar" />
+	</header>
+	<main>
+	  <div class="container-fluid">
+        <!-- Profile -->
+        <div class="row">   
+          <div class="col-md-2"></div>
+          <div class="userProfile col-md-8">
+            <div class="col-md-2"></div>
+            <!-- Profile-img -->      
+            <div class="col-md-2">            
+              <img th:src="${session.login.userImg}" class="rounded-circle" height="160" alt="Avatar" id="profileImg"/>
+              <input type="file" id="profileImgUpload" style="display:none;" /> 
+            </div>
+            <!-- Profile abstact -->
+            <div class="col-md-7 container-fluid">
+              <div class="col-md-12 userInfo">
+                <span class="profile" th:text="${session.login.userId}">로그인 유저 아이디</span>
+                <span class="profile profileBtn"><a th:href="@{/profile}" class="btn btn-default">프로필 편집</a> </span>
+                <span class="profile profileIcon"><button type="button" class="btn-link profile text-dark"><i class="fas fa-cog fa-lg"></i></button></span>
+                <span class="profile profileIcon"><button type="button" class="btn-link profile text-dark" id="postBtn"><i class="fas fa-edit fa-lg"></i></button></span>              
+              </div>
+              <div class="col-md-12 userInfo">
+                <span class="userLog feedNum" th:text="|게시물 ${#lists.size(feedList)}|">게시물</span>              
+                <button type="button" class="userLog followBtn" id="followBtn" th:text="|팔로우 ${#lists.size(followingList)}|">팔로우</button>              
+                <button type="button" class="userLog followBtn" id="followerBtn" th:text="|팔로워 ${#lists.size(followerList)}|">팔로워</button>            
+              </div>
+              <div class="col-md-12 userInfo">
+                <span class="profile" th:text="${session.login.userName}">로그인 유저 이름</span>
+              </div>
+            </div>
+          </div> 
+        </div>
+        
+        
+        <div class="row">
+          <div class="col-md-2"></div>
+          <div class="col-md-8 text-center my-4 feedNavBar">
+            <a href="#" class="myFeed text-dark"><i class="fas fa-th" id="icon"></i><span class="list">게시물</span></a>
+            <a href="#" class="myFeed text-dark"><i class="fas fa-tv" id="icon"></i><span class="list">IGTV</span></a>
+            <a href="#" class="myFeed text-dark"><i class="far fa-bookmark" id="icon"></i><span class="list">저장됨</span></a>
+            <a href="#" class="myFeed text-dark"><i class="far fa-id-badge" id="icon"></i><span class="list">태그됨</span></a>
+          </div>
+        </div>
+        
+   	   <div class="row uploadedFeedRow" th:if="${#lists.size(feedList) > 0}">
+       	 <div class="container-fluid">
+       		<div class="col-md-3"> </div>
+       		<div class="myFeedList col-md-7"> 			
+	   			<div class="col-md-3 myFeedImg" th:each="feedList: ${feedList}">
+	           		<img class="feedImg" th:src="@{${feedList.fileVO[0].fileName}}"/>  
+	           		<div class="btnRow">			
+	       				<button th:id="'feedNo_' + ${feedList.feedNo}" type="button" class="btn btn-primary feedDelBtn">삭제</button>
+	       			</div>       
+	       		</div> 
+       	  	</div>
+   	  	 </div>
+   	   </div>
+	  </div>      
+
+      <!-- Feed write modal -->
+      <div class="modal fade" id="feedModal" tabindex="-1" role="dialog" aria-labelledby="feedModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-center" role="document">
+          <div class="modal-content">
+            <div class="modal-header container-fluid">
+              <div class="modal-title col-md-11" id="feedModal">피드 작성</div>
+              <div class="modal-title-close col-md-1">
+                <button type="button" class="close closeIcon" data-dimdiss="modal" aria-label="Close" id="closeOnHeader">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+            <div class="modal-body">
+              <form role="form" th:action="@{/feed/post(${_csrf.parameterName}=${_csrf.token})}" id="writeForm" method="post" enctype="multipart/form-data">
+                <p><small>사진 업로드</small></p>
+                <!-- 첨부파일 영역 -->
+                <div class="form-group border fileDiv">                             
+                </div> 
+                <input type="file" class="btn btn-primary selectFileBtn" id="imgUpload" name="feedImg" multiple/>
+                <div class="form-group my-5">
+                  <div class="feedContent">
+                    <input type="text" class="contentInput" placeholder="내용을 입력해주세요" name="content"/>
+                  </div>
+                </div>
+                <input type="hidden" name="userEmail" id="userEmail" th:value="${session.login.userEmail}">
+	            <div class="modal-footer">
+	              <button type="button" class="btn btn-secondary closeBtn" data-dimdiss="modal" id="closeBtn">Close</button>
+	              <button type="submit" class="btn btn-primary submitBtn">upload Feed</button>
+	            </div>                  
+         	  </form>
+            </div>  
+          </div>  
+        </div>
+      </div>
+
+      <!-- follow -->
+      <div class="modal fade" id="followModal" tabindex="-1" role="dialog" aria-labelledby="followModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-center" role="document">
+          <div class="modal-content">
+            <div class="modal-header container-fluid">
+              <div class="modal-title col-md-11" id="followModal">팔로잉</div>
+              <div class="modal-title-close col-md-1">
+                <button type="button" class="close closeIcon" data-dimdiss="modal" aria-label="Close" id="closeIcon">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="container-fluid text-center modalbodyContainer">
+                  	<div class="col-md-12 text-center align-items-center" id="noFollow" th:if="${#lists.isEmpty(followingList)}">
+	                    <div class="iconBorder">                  
+	                      <i class="fas fa-user-plus addPeople"></i>
+	                    </div>
+	                    <p class="my-2" style="font-size: 25px;">팔로우</p>
+	                    <P>회원님이 팔로우하는 모든 사람이 여기에 표시됩니다.</P>
+                  	</div>	
+                   	<div class="container-fluid follower" th:unless="${#lists.isEmpty(followingList)}" th:each="followingList: ${followingList}">
+                       <!-- 유저 프로필 -->
+                       <div class="col-md-2"></div>
+                       <div class="col-md-2 text-center">
+                         <img th:src="@{${followingList.userImg}}" class="rounded-circle" height="50" alt="Avatar"/> 
+                       </div>                 
+                       <div class="col-md-3">
+                         <!-- 유저 아이디 -->
+                         <div class="col-md-12">
+                           <span th:text="${followingList.userId}"><strong>팔로우 중인 유저 아이디</strong></span>
+                         </div>
+                         <!-- 유저 이름-->
+                         <div class="col-md-12">
+                           <span th:text="${followingList.userName}">팔로우 중인 유저 이름</span>
+                         </div>
+                       </div>    
+                       <!-- 팔로우 버튼 -->
+                       <div class="col-md-3">
+                         <button type="button" id="followBtn_${followingList.userEmail}" class="followBtnAcc btn btn-default">팔로잉</button>
+                       </div>                        
+                 	</div>
+                  
+                  <p><strong>회원님을 위한 추천</strong></p>
+
+                  <div class="col-md-12 text-center align-items-center" id="recommandUser">	
+                     <div class="container-fluid recommandList" th:each="recommendList : ${recommentList}">
+                        <!-- 유저 프로필 -->
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2 text-center">
+                          <img th:src="@{${recommendList.userImg}}" class="rounded-circle" height="50" alt="Avatar"/> 
+                        </div>                 
+                        <div class="col-md-3">
+                          <!-- 유저 아이디 -->
+                          <div class="col-md-12">
+                            <span th:text="${recommendList.userId}"><strong>추천 유저 아이디</strong></span>
+                          </div>
+                          <!-- 유저 이름-->
+                          <div class="col-md-12">
+                            <span th:text="${recommendList.userName}">추천 유저 이름</span>
+                          </div>
+                        </div>    
+                        <!-- 팔로우 버튼 -->
+                        <div class="col-md-3">
+                          <button type="button" id="followBtn_${recommendList.userEmail}" class="followBtnAcc btn btn-primary">팔로우</button>
+                        </div>                        
+                    </div>
+                  </div>
+                </div>
+              </div>              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary closeBtn" data-dimdiss="modal" id="closeBtn">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- follower -->
+      <div class="modal fade" id="followerModal" tabindex="-1" role="dialog" aria-labelledby="followerModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-center" role="document">
+          <div class="modal-content">
+            <div class="modal-header container-fluid">
+              <div class="modal-title col-md-11" id="followerModal">팔로워</div>
+              <div class="modal-title-close col-md-1">
+                <button type="button" class="close closeIcon" data-dimdiss="modal" aria-label="Close" id="closeIcon">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="container-fluid text-center modalbodyContainer">
+                  	<div class="col-md-12 text-center align-items-center" id="noFollow" th:if="${#lists.isEmpty(followerList)}">
+	                    <div class="iconBorder">                  
+	                      <i class="fas fa-user-plus addPeople"></i>
+	                    </div>
+	                    <p class="my-2" style="font-size: 25px;">팔로우</p>
+	                    <P>회원님을 팔로우하는 모든 사람이 여기에 표시됩니다.</P>
+                  	</div>
+                    <div class="container-fluid follower" th:unless="${#lists.isEmpty(followerList)}" th:each="followerList: ${followerList}">
+                        <!-- 유저 프로필 -->
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2 text-center">
+                          <img th:src="${followerList.userImg}" class="rounded-circle" height="50" alt="Avatar"/>
+                        </div>                 
+                        <div class="col-md-3">
+                          <!-- 유저 아이디 -->
+                          <div class="col-md-12">
+                            <span th:text="${followerList.userId}"><strong>팔로워 유저 아이디</strong></span>
+                          </div>
+                          <!-- 유저 이름-->
+                          <div class="col-md-12">
+                            <span th:text="${followerList.userName}">팔로워 유저 이름</span>
+                          </div>
+                        </div>    
+                        <!-- 팔로우 버튼 -->
+                        <div class="col-md-3"> 
+                       		<button th:if="${#lists.contains(followingList, followerList) }" type="button" th:id="'followBtn_' + ${followerList.userEmail}" class="followBtnAcc btn btn-default">팔로잉</button> 
+                      		<button th:unless="${#lists.contains(followingList, followerList) }" type="button" th:id="'followBtn_' + ${followerList.userEmail}" class="followBtnAcc btn btn-primary">팔로우</button>
+                       	</div>                        
+                    </div>
+
+                  <p><strong>회원님을 위한 추천</strong></p>
+
+                  <div class="col-md-12 text-center align-items-center" id="recommandUser">	
+                     <div class="container-fluid recommandList" th:each="recommendList : ${recommentList}">
+                        <!-- 유저 프로필 -->
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2 text-center">
+                          <img th:src="@{${recommendList.userImg}}" class="rounded-circle" height="50" alt="Avatar"/> 
+                        </div>                 
+                        <div class="col-md-3">
+                          <!-- 유저 아이디 -->
+                          <div class="col-md-12">
+                            <span th:text="${recommendList.userId}"><strong>추천 유저 아이디</strong></span>
+                          </div>
+                          <!-- 유저 이름-->
+                          <div class="col-md-12">
+                            <span th:text="${recommendList.userName}">추천 유저 이름</span>
+                          </div>
+                        </div>    
+                        <!-- 팔로우 버튼 -->
+                        <div class="col-md-3">
+                          <button type="button" id="followBtn_${recommendList.userEmail}" class="followBtnAcc btn btn-primary">팔로우</button>
+                        </div>                        
+                    </div>
+                  </div>
+                </div>
+              </div>              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary closeBtn" data-dimdiss="modal" id="closeBtn">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+   </main>
+    
+    <!-- for preview image -->
+	<script id="imgTemplate" type="text/x-handlerbars-template">
+		<li class="imgList" style="list-style:none; margin: 5px;">
+			<span class="mailbox-attachment-icon uploadImage">
+				<img src="{{imgSrc}}" class="fileImg" alt="Attachment" height="150", width="150">		
+			</span>
+			<a th:href="@{{{fullName}}}" class="btn btn-danger delBtn" id="delBtn" name="delBtn">삭제</a>
+		</li>
+	</script>
+    <script type="text/javascript" th:src="@{/js/profileJS.js}"> </script>	
+</body>
+</html>

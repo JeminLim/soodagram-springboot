@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace = "com.soodagram.soodagram.mappers.user.UserMapper">
+
+	<resultMap type="UserVO" id="UserResultMap">
+		<id property="userEmail" column="user_email"/>
+		<result property="userPw" column="user_pw" />
+		<result property="userName" column="user_name"/>
+		<result property="userId" column="user_id"/>
+		<result property="userPhone" column="user_phone"/>
+		<result property="userGender" column="user_gender"/>
+		<result property="userImg" column="user_img"/>
+		<result property="userRegDate" column="user_reg_date"/>
+		<result property="userDesc" column="user_desc"/>	
+		<result property="authority" column="authority" />	
+	</resultMap>
+
+	<!-- ####### 회원가입 로직 ####### -->
+	<!-- 회원등록 -->
+	<insert id = "register">
+		INSERT INTO tbl_user (
+			user_email,
+			user_pw,
+			user_name,
+			user_id
+		) VALUES (
+			#{userEmail},
+			#{userPw},
+			#{userName},
+			#{userId}
+		)		
+	</insert>
+	
+	<!-- Authority 부여 -->
+	<insert id = "registerAuth">
+		INSERT INTO tbl_user_auth_mapping(
+			user_email,
+			auth_code
+		) VALUES (
+			#{userEmail},
+			1
+		);
+	</insert>
+	
+	<!-- email 중복 가입 방지 -->
+	<select id="duplicateEmail" resultType="int">
+		SELECT COUNT(user_email)
+		FROM tbl_user
+		WHERE
+			user_email = #{userEmail}
+	</select>
+	
+	<!-- ID 중복 체크 -->
+	<select id="duplicateId" resultType="int">
+		SELECT COUNT(user_email)
+		FROM tbl_user
+		WHERE
+			user_id = #{userId}
+	</select>
+	
+	
+	<!-- #### 로그인 #### -->
+	<select id="login" resultMap="UserResultMap">
+		SELECT tu.*, ac.authority
+		FROM tbl_user as tu
+		INNER JOIN tbl_user_auth_mapping as am
+		ON tu.user_email = am.user_email
+		INNER JOIN tbl_user_auth_code as ac
+		ON am.auth_code = ac.auth_code_seq
+		WHERE
+			am.user_email = #{userEmail}
+	</select>
+	
+	<!-- 세션아이디 및 유지기간 갱신 -->
+	<update id="keepLogin">
+		UPDATE tbl_user
+		SET session_key = #{sessionId},
+			session_limit = #{sessionLimit}
+		WHERE
+			user_email = #{userEmail}
+	</update>
+	
+	<!-- 쿠키 세션 검증 -->
+	<select id="checkUserWithSessionKey" resultMap="UserResultMap">
+		SELECT *
+		FROM tbl_user
+		WHERE
+			session_key = #{value}
+	</select>
+	
+	<!-- #### 회원 정보 업데이트 #### -->
+	<!-- 프로필 사진 변경 -->
+	<update id="uploadUserImg">
+		UPDATE tbl_user
+		SET user_img = #{userImg}
+		WHERE
+			user_email = #{userEmail}
+	</update>
+	<!-- 개인정보 갱신 -->
+	
+	<update id="updateUserInfo">
+		UPDATE tbl_user
+		SET 
+			user_name = #{userName},
+			user_id = #{userId},
+			user_desc = #{userDesc},
+			user_phone = #{userPhone},
+			user_gender = #{userGender}
+		WHERE
+			user_email = #{userEmail}
+	</update>
+	
+	
+	
+	
+	
+	<!-- #### 유저 팔로우 팔로워 로직 ##### -->
+	<!-- 팔로우 여부 검사 -->
+	<select id="followCheck" parameterType="hashMap" resultType="int">
+		SELECT COUNT(follow_no)
+		FROM tbl_user_follow
+		WHERE
+			based_user = #{loginEmail} AND
+			target_user = #{targetEmail}
+	</select>	
+	
+	<!-- 유저 팔로우 -->
+	<insert id="userFollow">
+		INSERT INTO tbl_user_follow(
+			based_user,
+			target_user
+		) VALUES (
+			#{loginEmail},
+			#{targetEmail}
+		)
+	</insert>
+	
+	<!-- 팔로우 취소 -->
+	<delete id="cancelFollow">
+		DELETE FROM tbl_user_follow
+		WHERE
+			based_user = #{loginEmail} AND
+			target_user = #{targetEmail}
+	</delete>
+	
+	
+	<!-- 팔로워 리스트 -->
+	<select id="getFollowerList" resultMap="UserResultMap">
+		SELECT *
+		FROM tbl_user AS tu
+		INNER JOIN tbl_user_follow AS tuf
+		ON tu.user_email = tuf.based_user
+		WHERE tuf.target_user = #{userEmail}
+	</select>
+	
+	<!-- 팔로잉 리스트 -->
+	<select id="getFollowingList" resultMap="UserResultMap">
+		SELECT *
+		FROM tbl_user AS tu
+		INNER JOIN tbl_user_follow AS tuf
+		ON tu.user_email = tuf.target_user
+		WHERE tuf.based_user = #{userEmail}
+	</select>
+	
+	
+	<!-- #### 유저 정보 조회 #### -->
+	<!-- 유저 정보 조회 -->
+	<select id="getUserInfo" resultMap="UserResultMap">	
+		SELECT 
+			*
+		FROM tbl_user
+		WHERE
+			user_email = #{userEmail}
+	</select>
+	
+	<select id="getUserInfoById" resultMap="UserResultMap">
+		SELECT *
+		FROM tbl_user
+		WHERE
+			user_id = #{userId}
+	</select>
+	
+	<!-- #### 유저 추천 #### -->
+	<!-- 유저 추천 (팔로잉 및 본인 아이디 제외 순서대로 출력) -->
+	<select id="getUserList" resultMap="UserResultMap">
+		SELECT *
+		FROM tbl_user AS tu
+		WHERE tu.user_email NOT IN (
+			SELECT tuf.target_user
+			FROM tbl_user_follow AS tuf
+			WHERE tuf.based_user = #{userEmail}
+		) AND tu.user_email != #{userEmail}
+		LIMIT 5;			
+	</select>
+	
+	
+</mapper>
