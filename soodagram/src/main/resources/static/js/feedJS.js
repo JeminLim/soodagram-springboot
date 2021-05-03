@@ -14,7 +14,7 @@ const io = new IntersectionObserver(entries => {
 		attachFeeds();
 	}
 })
-
+io.observe(document.getElementById('feedSection'));
 attachFeeds(); // 초기 피드 로드
 
 $('.replySubmit').click(function(e) {
