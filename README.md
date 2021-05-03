@@ -34,4 +34,6 @@
    <button th:unless="${#lists.contains(followingList, followerList) }" type="button" th:id="'followBtn_' + ${followerList.userEmail}" class="followBtnAcc btn btn-primary">팔로우</button>    
 </div>
 ```
-Thymeleaf의 경우 템플릿 엔진에서 제공하는 기능을 이용하여 간단하게 구현이 가능했습니다.
+Thymeleaf의 경우 템플릿 엔진에서 제공하는 기능을 이용하여 간단하게 구현이 가능했습니다.    
+이외의 설정도 xml 기반으로 작성된 파일(root-context.xml, servlet-context.xml, web.xml)은 'application.properties' 및 java 파일로 대체되었습니다.     
+<img src="https://user-images.githubusercontent.com/65437310/116869098-0ae16380-ac4b-11eb-940a-991f9017f5aa.png">
