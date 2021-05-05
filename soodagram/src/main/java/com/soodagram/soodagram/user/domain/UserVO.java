@@ -5,7 +5,8 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class UserVO {
+public class UserVO{
+	
 	private String userEmail;
 	private String userPw;
 	private String userName;
@@ -16,4 +17,6 @@ public class UserVO {
 	private Date userRegDate;
 	private String userDesc;
 	private String authority;
+	
+	
 }

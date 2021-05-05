@@ -29,7 +29,7 @@ import com.soodagram.soodagram.user.service.UserService;
  * @version 1.0
  */
 @Controller
-@RequestMapping("/user")
+@RequestMapping("")
 public class UserLoginController {
 	
 	private final UserService userService;
@@ -52,10 +52,10 @@ public class UserLoginController {
 	 * @param redirectAttributes
 	 * @throws Exception
 	 */
-	@PostMapping("/login")
+	@PostMapping("/loginSuccess")
 	public String loginPOST(LoginDTO loginDTO, HttpSession httpSession, Model model, RedirectAttributes redirectAttributes) throws Exception {
 		
-		UserVO userVO = userService.login(loginDTO.getUserEmail());
+		UserVO userVO = userService.getLoginUser(loginDTO.getUserEmail());
 		
 		if(userVO == null || !BCrypt.checkpw(loginDTO.getUserPw(), userVO.getUserPw())) {
 			return "/user/loginPost";
@@ -68,7 +68,6 @@ public class UserLoginController {
 		int amount = 60 * 60 * 24 * 7;
 		Date sessionLimit = new Date(System.currentTimeMillis() + (1000 * amount));
 		userService.keepLogin(userVO.getUserEmail(), httpSession.getId(), sessionLimit);
-		
 		return "redirect:/";
 	}
 	
@@ -90,7 +89,6 @@ public class UserLoginController {
 			httpSession.removeAttribute("login");
 			httpSession.invalidate();
 			Cookie loginCookie = WebUtils.getCookie(request, "loginCookie");
-			loginCookie.setPath("/");
 			loginCookie.setMaxAge(0);
 			response.addCookie(loginCookie);
 			userService.keepLogin(userVO.getUserEmail(), "none", new Date());			

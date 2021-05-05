@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.soodagram.soodagram.user.domain.LoginDTO;
 import com.soodagram.soodagram.user.domain.UserVO;
 import com.soodagram.soodagram.user.repository.UserDAO;
 
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserService {
 	 * 유저 로그인
 	 */
 	@Override
-	public UserVO login(String userEmail) throws Exception {
+	public LoginDTO login(String userEmail) throws Exception {
 		return userDAO.login(userEmail);
 	}
 
@@ -161,6 +162,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Integer checkFollow(Map<String, Object> userInput) throws Exception {
 		return userDAO.checkFollow(userInput);
+	}
+
+	@Override
+	public UserVO getLoginUser(String userEmail) throws Exception {
+		return userDAO.getLoginUser(userEmail);
 	}
 	
 	

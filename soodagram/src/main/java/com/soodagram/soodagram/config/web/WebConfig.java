@@ -1,4 +1,4 @@
-package com.soodagram.soodagram;
+package com.soodagram.soodagram.config.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -44,8 +44,8 @@ public class WebConfig implements WebMvcConfigurer{
 	
 	@Override 
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(loginInterceptor).addPathPatterns("/*").excludePathPatterns("/user/login", "/user/register");
-		registry.addInterceptor(loginAfterInterceptor).addPathPatterns("/user/login", "/user/register"); 
+		registry.addInterceptor(loginInterceptor).addPathPatterns("/*").excludePathPatterns("/login", "/register");
+		registry.addInterceptor(loginAfterInterceptor).addPathPatterns("/login", "/register"); 
 	 }
 	
 

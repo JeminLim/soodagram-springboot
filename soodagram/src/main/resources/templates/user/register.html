@@ -17,7 +17,7 @@
 								<span class="fb-login">Facebook으로 로그인</span>
 							</button>										
 							<p class="or"> 또는 </p>
-							<form th:action="@{/user/regist}" method="post">
+							<form th:action="@{/regist}" method="post">
 								<div class="form-group">
 									<input type="email" id="userEmail" class="form-control" placeholder="이메일" name="userEmail">
 								</div>
@@ -47,7 +47,7 @@
 			<div class="col-sm-12">
 				<div class="text-center">					
 					<span class="go-to-register">계정이 있으신가요?
-						<a th:href="@{/user/login}" class="register">로그인</a>
+						<a th:href="@{/login}" class="register">로그인</a>
 					</span>
 				</div>
 			</div>

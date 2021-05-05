@@ -1,4 +1,4 @@
-package com.soodagram.soodagram;
+package com.soodagram.soodagram.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserLoginService userLoginService;
 	
+	@Autowired
+	private CustomLoginSuccessHandler customLoginSuccessHandler;
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -32,15 +35,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return new DefaultHttpFirewall();
 	}
 	
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		
-	}
-	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception{
 		http.authorizeRequests().antMatchers("/css/**", "/dist/**", "/fonts/**", "/images/**", "/js/**").permitAll();
-		
+		http.authorizeRequests().antMatchers("/login","/reigst").permitAll();
+		http.authorizeRequests().antMatchers("/", "/**").authenticated();
+		http.formLogin().loginPage("/login").usernameParameter("userEmail").passwordParameter("userPw").successHandler(customLoginSuccessHandler);
+		http.logout().logoutSuccessUrl("/login");
 	}
 	
 	@Override

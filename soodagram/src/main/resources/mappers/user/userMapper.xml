@@ -17,7 +17,12 @@
 		<result property="userDesc" column="user_desc"/>	
 		<result property="authority" column="authority" />	
 	</resultMap>
-
+	
+	<resultMap type="LoginDTO" id="LoginResultMap">
+		<id property="userEmail" column="user_email" />
+		<result property="userPw" column="user_pw" />
+	</resultMap>
+	
 	<!-- ####### 회원가입 로직 ####### -->
 	<!-- 회원등록 -->
 	<insert id = "register">
@@ -63,7 +68,16 @@
 	
 	
 	<!-- #### 로그인 #### -->
-	<select id="login" resultMap="UserResultMap">
+	<select id="login" resultMap="LoginResultMap">
+		SELECT 
+			user_email,
+			user_pw
+		FROM tbl_user
+		WHERE
+			user_email = #{userEmail}
+	</select>
+	
+	<select id="getLoginUser" resultMap="UserResultMap">
 		SELECT tu.*, ac.authority
 		FROM tbl_user as tu
 		INNER JOIN tbl_user_auth_mapping as am
