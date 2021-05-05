@@ -29,7 +29,8 @@
 							<a href="#" class="find-password">
 								비밀번호를 잊으셨나요?
 							</a>						
-						</form>							
+						</form>
+						<p style="margin-top: 15px; color: red;" th:text="${#request.getAttribute('loginFailMsg')}">오류 메시지</p>							
 					</div>
 				</div>
 			</div>

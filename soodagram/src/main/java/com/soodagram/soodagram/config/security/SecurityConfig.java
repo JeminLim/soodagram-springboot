@@ -25,6 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private CustomLoginSuccessHandler customLoginSuccessHandler;
 	
+	@Autowired
+	private CustomLoginFailureHandler customLoginFailureHandler;
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -40,7 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/css/**", "/dist/**", "/fonts/**", "/images/**", "/js/**").permitAll();
 		http.authorizeRequests().antMatchers("/login","/reigst").permitAll();
 		http.authorizeRequests().antMatchers("/", "/**").authenticated();
-		http.formLogin().loginPage("/login").usernameParameter("userEmail").passwordParameter("userPw").successHandler(customLoginSuccessHandler);
+		http.formLogin().loginPage("/login").usernameParameter("userEmail").passwordParameter("userPw")
+			.successHandler(customLoginSuccessHandler)
+			.failureHandler(customLoginFailureHandler);
 		http.logout().logoutSuccessUrl("/login");
 	}
 	

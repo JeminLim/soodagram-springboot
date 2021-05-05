@@ -45,30 +45,11 @@ public class UserLoginController {
 	}
 	
 	/**
-	 * 로그인 처리 함수
-	 * @param loginDTO
-	 * @param httpSession
-	 * @param model
-	 * @param redirectAttributes
-	 * @throws Exception
+	 * 로그인 실패 처리 요청
 	 */
-	@PostMapping("/loginSuccess")
-	public String loginPOST(LoginDTO loginDTO, HttpSession httpSession, Model model, RedirectAttributes redirectAttributes) throws Exception {
-		
-		UserVO userVO = userService.getLoginUser(loginDTO.getUserEmail());
-		
-		if(userVO == null || !BCrypt.checkpw(loginDTO.getUserPw(), userVO.getUserPw())) {
-			return "/user/loginPost";
-		}
-		
-		httpSession.setAttribute("login", userVO);
-		model.addAttribute("user", userVO);
-		
-		// 로그인 쿠키 등록
-		int amount = 60 * 60 * 24 * 7;
-		Date sessionLimit = new Date(System.currentTimeMillis() + (1000 * amount));
-		userService.keepLogin(userVO.getUserEmail(), httpSession.getId(), sessionLimit);
-		return "redirect:/";
+	@PostMapping("/login")
+	public String loginPOST() throws Exception {
+		return "/user/login";		
 	}
 	
 	/**
