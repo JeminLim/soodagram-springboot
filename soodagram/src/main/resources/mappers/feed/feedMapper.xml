@@ -88,7 +88,7 @@
 			tuf.based_user = #{userVO.userEmail}
 		ORDER BY
 			tf.feed_no DESC, tf.update_date DESC
-		LIMIT #{page}, 6		
+		LIMIT #{page}, 4		
 	</select>
 	
 	<!-- 피드 삭제 -->

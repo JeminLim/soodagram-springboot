@@ -20,7 +20,7 @@ import com.soodagram.soodagram.user.service.UserService;
  * @version 1.0
  */
 @Controller
-@RequestMapping("/user/regist")
+@RequestMapping("/regist")
 public class UserRegisterController {
 	
 	private final UserService userService;

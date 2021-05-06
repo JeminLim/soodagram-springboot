@@ -29,7 +29,7 @@ import com.soodagram.soodagram.user.service.UserService;
  * @version 1.0
  */
 @Controller
-@RequestMapping("/user")
+@RequestMapping("")
 public class UserLoginController {
 	
 	private final UserService userService;
@@ -45,31 +45,11 @@ public class UserLoginController {
 	}
 	
 	/**
-	 * 로그인 처리 함수
-	 * @param loginDTO
-	 * @param httpSession
-	 * @param model
-	 * @param redirectAttributes
-	 * @throws Exception
+	 * 로그인 실패 처리 요청
 	 */
 	@PostMapping("/login")
-	public String loginPOST(LoginDTO loginDTO, HttpSession httpSession, Model model, RedirectAttributes redirectAttributes) throws Exception {
-		
-		UserVO userVO = userService.login(loginDTO.getUserEmail());
-		
-		if(userVO == null || !BCrypt.checkpw(loginDTO.getUserPw(), userVO.getUserPw())) {
-			return "/user/loginPost";
-		}
-		
-		httpSession.setAttribute("login", userVO);
-		model.addAttribute("user", userVO);
-		
-		// 로그인 쿠키 등록
-		int amount = 60 * 60 * 24 * 7;
-		Date sessionLimit = new Date(System.currentTimeMillis() + (1000 * amount));
-		userService.keepLogin(userVO.getUserEmail(), httpSession.getId(), sessionLimit);
-		
-		return "redirect:/";
+	public String loginPOST() throws Exception {
+		return "/user/login";		
 	}
 	
 	/**
@@ -90,7 +70,6 @@ public class UserLoginController {
 			httpSession.removeAttribute("login");
 			httpSession.invalidate();
 			Cookie loginCookie = WebUtils.getCookie(request, "loginCookie");
-			loginCookie.setPath("/");
 			loginCookie.setMaxAge(0);
 			response.addCookie(loginCookie);
 			userService.keepLogin(userVO.getUserEmail(), "none", new Date());			

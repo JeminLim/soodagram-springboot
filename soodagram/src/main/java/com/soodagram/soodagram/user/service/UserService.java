@@ -19,7 +19,8 @@ public interface UserService {
 	/**
 	 * 유저 로그인 관련
 	 */
-	UserVO login(String userEmail) throws Exception;
+	LoginDTO login(String userEmail) throws Exception;
+	UserVO getLoginUser(String userEmail) throws Exception;
 	void keepLogin(String userEmail, String sessionId, Date next) throws Exception;
 	UserVO checkLoginBefore(String value) throws Exception;
 	

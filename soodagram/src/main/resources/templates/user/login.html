@@ -11,7 +11,7 @@
 				<div class="text-center">
 					<img th:src="@{/images/soodagram-font-logo.png}" class="instagram-logo">
 					<div class="login-form">
-						<form th:action="@{/user/login}" method="post" th:object="${userVO}">
+						<form th:action="@{/login}" method="post" th:object="${userVO}">
 							<div class="form-group">
 								<input type="text" name="userEmail" class="form-control" placeholder="이메일">
 							</div>
@@ -29,7 +29,8 @@
 							<a href="#" class="find-password">
 								비밀번호를 잊으셨나요?
 							</a>						
-						</form>							
+						</form>
+						<p style="margin-top: 15px; color: red;" th:text="${#request.getAttribute('loginFailMsg')}">오류 메시지</p>							
 					</div>
 				</div>
 			</div>
@@ -38,7 +39,7 @@
 			<div class="col-sm-12">
 				<div class="text-center">					
 					<span class="go-to-register">계정이 없으신가요?
-					<a th:href="@{/user/regist}" class="register">가입하기</a>
+					<a th:href="@{/regist}" class="register">가입하기</a>
 					</span>
 				</div>
 			</div>

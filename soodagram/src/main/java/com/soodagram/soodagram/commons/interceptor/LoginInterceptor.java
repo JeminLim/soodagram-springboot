@@ -38,11 +38,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 		
 		if(httpSession.getAttribute("login") == null) {
 			logger.info("current user is not logged");
-			response.sendRedirect("/user/login");
+			response.sendRedirect("/login");
 			return false;
 		} 		
 		
-		return true;
-		
+		return true;		
 	}	
+	
+	
 }

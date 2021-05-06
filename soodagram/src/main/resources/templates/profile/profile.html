@@ -222,7 +222,7 @@
                         <!-- 팔로우 버튼 -->
                         <div class="col-md-3"> 
                        		<button th:if="${#lists.contains(followingList, followerList) }" type="button" th:id="'followBtn_' + ${followerList.userEmail}" class="followBtnAcc btn btn-default">팔로잉</button> 
-                      		<button th:unless="${#lists.contains(followingList, followerList) }" type="button" th:id="'followBtn_' + ${followerList.userEmail}" class="followBtnAcc btn btn-primary">팔로우</button>
+                      		<button th:unless="${#lists.contains(followingList, followerList) }" type="button" th:id="'followBtn_' + ${followerList.userEmail}" class="followBtnAcc btn btn-primary">팔로우</button>    
                        	</div>                        
                     </div>
 
