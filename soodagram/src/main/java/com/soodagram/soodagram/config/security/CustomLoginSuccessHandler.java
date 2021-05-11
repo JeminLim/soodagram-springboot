@@ -14,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.soodagram.soodagram.user.domain.UserVO;
+import com.soodagram.soodagram.domain.entity.User;
 import com.soodagram.soodagram.user.repository.UserDAO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		HttpSession session = request.getSession();
 		// 로그인 된 유저 정보
-		UserVO userVO = userDAO.getLoginUser(authentication.getName());
+		User userVO = userDAO.getLoginUser(authentication.getName());
 		// 세션에 유저 정보 저장
 		session.setAttribute("login", userVO);
 		// 로그인 쿠키 생성, Remember me 활용으로 대체 예정

@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 
-import com.soodagram.soodagram.user.service.UserLoginService;
+import com.soodagram.soodagram.service.UserLoginService;
 
 @Configuration
 @EnableWebSecurity

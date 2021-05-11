@@ -43,7 +43,7 @@
 	            <p id="userId" th:text="${session.login.userId}">로그인 유저 아이디</p>
 	          </div>
 	        </div>
-	        <form th:action="@{/profile}" role="form" id="userInfoForm" method="post">
+	        <form th:action="@{/profile}" role="form" id="userInfoForm" method="post" >
 	          <div class="row displayflex">
 	            <aside class="leftSection col-md-3">
 	              <label>이름</label>
@@ -69,7 +69,7 @@
 	              <label>소개</label>
 	            </aside>
 	            <div class="rightSection col-md-9">
-	              <textarea class="infoInput" name="userDesc" id="inputUserDesc" th:value="${session.login.userDesc}"></textarea>
+	              <textarea class="infoInput" name="userDesc" id="inputUserDesc" th:text="${session.login.userDesc}"></textarea>
 	              <div class="additionalInfo">
 	                <p class="desc"><strong>개인정보</strong></p>
 	                <p class="desc descInfo">비지니스나 반려동물 등에 사용된 계정인 경우에도 회원님의 개인정보를 입력하세요. 공개 프로필에는 포함되지 않습니다.</p>

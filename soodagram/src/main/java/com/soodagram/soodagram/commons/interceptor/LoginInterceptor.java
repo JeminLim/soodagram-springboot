@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.util.WebUtils;
 
-import com.soodagram.soodagram.user.domain.UserVO;
-import com.soodagram.soodagram.user.service.UserService;
+import com.soodagram.soodagram.domain.entity.User;
+import com.soodagram.soodagram.service.UserService;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
@@ -30,7 +30,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 		Cookie loginCookie = WebUtils.getCookie(request, "loginCookie");
 		
 		if(loginCookie != null) {
-			UserVO userVO = userService.checkLoginBefore(loginCookie.getValue());
+			User userVO = userService.checkLoginBefore(loginCookie.getValue());
 			if(userVO != null) {
 				httpSession.setAttribute("login", userVO);
 			}
