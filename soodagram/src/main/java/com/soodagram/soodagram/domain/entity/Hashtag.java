@@ -8,16 +8,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
+@Table(name="tbl_hashtag")
 public class Hashtag {
 	
 	@Id
@@ -31,5 +32,10 @@ public class Hashtag {
 	@Column
 	private List<FeedHashtag> feedHashtag;
 	
-	
+	@Builder
+	public Hashtag (Long hashtagNo, String content, List<FeedHashtag> feedHashtag) {
+		this.hashtagNo = hashtagNo;
+		this.content = content;
+		this.feedHashtag = feedHashtag;
+	}
 }

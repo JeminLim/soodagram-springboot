@@ -1,15 +1,18 @@
 package com.soodagram.soodagram.domain.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,6 +29,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access=AccessLevel.PRIVATE, force=true)
 @EntityListeners(AuditingEntityListener.class)
+@Table(name="tbl_user")
 public class User {
 	
 	@Id
@@ -45,7 +49,8 @@ public class User {
 	@Column
 	private String userPhone;
 	@Column
-	private String userGender;
+	@Enumerated(EnumType.STRING)
+	private Gender userGender;
 	@Column
 	private String userImg;
 	
@@ -60,13 +65,30 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private AuthCode authority;
 	
+	@OneToMany(targetEntity=Feed.class, mappedBy="writer")
+	@Column
+	private List<Feed> feeds;
+	
+	@OneToMany(targetEntity=Follower.class, mappedBy="toUser")
+	@Column
+	private List<Follower> followers;
+	
+	@OneToMany(targetEntity=Following.class, mappedBy="fromUser")
+	@Column
+	private List<Following> following;
+	
+	
 	public enum AuthCode {
 		ROLE_USER, ROLE_ADMIN
 	}
 	
+	public enum Gender {
+		DEFAULT, MALE, FEMALE, BOTH
+	}
 	
 	@Builder
-	public User(String userEmail, String userPw, String userName, String userId, String userPhone, String userGender, String userImg, String userDesc, AuthCode authority) {
+	public User(Long userSeq, String userEmail, String userPw, String userName, String userId, String userPhone, Gender userGender, String userImg, String userDesc, AuthCode authority,List<Feed> feeds, List<Follower> followers, List<Following> following) {
+		this.userSeq = userSeq;
 		this.userEmail = userEmail;
 		this.userPw = userPw;
 		this.userName = userName;
@@ -76,5 +98,8 @@ public class User {
 		this.userImg = userImg;
 		this.userDesc = userDesc;
 		this.authority = authority;
+		this.followers = followers;
+		this.following = following;
+		this.feeds = feeds;
 	}
 }

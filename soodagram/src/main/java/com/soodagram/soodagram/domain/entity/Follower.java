@@ -1,6 +1,7 @@
 package com.soodagram.soodagram.domain.entity;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,34 +11,32 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
-@Table(name="tbl_feed_hashtag")
-public class FeedHashtag{
-	
+@Table(name="tbl_follower")
+public class Follower {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long feedHashtagSeq;
+	private Long followerSeq;
 	
+	@Column
+	private String fromUserId;
+
 	@ManyToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name="hashtagNo")
-	private Hashtag hashtag;	
-	
-	@ManyToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name="feedNo")
-	private Feed feed;
+	@JoinColumn(name="userSeq")
+	private User toUser;
 	
 	@Builder
-	public FeedHashtag(Long feedHashtagSeq, Hashtag hashtag, Feed feed) {
-		this.feedHashtagSeq = feedHashtagSeq;
-		this.hashtag = hashtag;
-		this.feed = feed;
+	public Follower(User toUser, String fromUserId) {
+		this.toUser = toUser;
+		this.fromUserId = fromUserId;
 	}
 	
 }
