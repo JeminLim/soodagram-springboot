@@ -1,11 +1,10 @@
 package com.soodagram.soodagram.service;
 
-import java.util.List;
-import java.util.Map;
+import org.springframework.stereotype.Service;
 
-import com.soodagram.soodagram.domain.entity.Reply;
+@Service
+public class ReplyService {
 
-public interface ReplyService {
-	void writeReply(Reply replyVO) throws Exception;
-	List<Reply> getReply(Map<String, Object> getInput) throws Exception;
+	
+	
 }

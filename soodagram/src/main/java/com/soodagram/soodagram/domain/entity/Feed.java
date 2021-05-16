@@ -1,6 +1,7 @@
 package com.soodagram.soodagram.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -30,6 +31,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 @Table(name="tbl_feed")
 public class Feed {
 	
@@ -45,32 +47,26 @@ public class Feed {
 	private String content;
 	
 	@OneToMany(targetEntity=FeedFile.class, mappedBy="feed")
-	@Column
-	private List<FeedFile> files;
+	@Builder.Default
+	private List<FeedFile> files = new ArrayList<>();
 	
 	@OneToMany(targetEntity=FeedHashtag.class, mappedBy="hashtag")
-	@Column
-	private List<FeedHashtag> feedHashtag;
+	@Builder.Default
+	private List<FeedHashtag> feedHashtags = new ArrayList<>();
 	
 	@OneToMany(targetEntity=Reply.class, mappedBy="feed")
-	@Column
-	private List<Reply> replies;
+	@Builder.Default
+	private List<Reply> replies = new ArrayList<>();
+	
+	@OneToMany(targetEntity=UserLikeFeed.class, mappedBy="feed")
+	@Builder.Default
+	private List<UserLikeFeed> likes = new ArrayList<>();
 	
 	@CreatedDate
 	@Column
 	private LocalDateTime regDate;
 	
 	@LastModifiedDate
-	private LocalDateTime updateDate;
-	
-	@Builder
-	public Feed(Long feedNo, User writer, String content, List<FeedFile> files, List<FeedHashtag> feedHashtag, List<Reply> replies) {
-		this.feedNo = feedNo;
-		this.writer = writer;
-		this.content = content;
-		this.files = files;
-		this.feedHashtag = feedHashtag;
-		this.replies = replies;
-	}
+	private LocalDateTime updateDate;	
 	
 }

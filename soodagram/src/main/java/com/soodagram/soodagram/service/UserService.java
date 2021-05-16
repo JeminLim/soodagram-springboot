@@ -1,5 +1,8 @@
 package com.soodagram.soodagram.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,33 +42,49 @@ public class UserService {
 		return userRepository.findByUserId(userId);
 	}
 	
-	public void following(User fromUser, String toUserId) {
+	public void following(UserDTO basedUser, UserDTO targetUser) {
 		
-		User target = userRepository.findByUserId(toUserId);
+		followingRepository.save(Following.builder()
+				.basedUser(basedUser.toEntity())
+				.targetUser(targetUser.toEntity())
+				.build());			
 		
-		Following following = Following.builder()
-				.fromUser(fromUser)
-				.toUserId(toUserId)
-				.build();
-		
-		followingRepository.save(following);	
-		
-		
-		
-		Follower follower = Follower.builder()
-				.toUser(target)
-				.fromUserId(fromUser.getUserId())
-				.build();
-		
-		followerRepository.save(follower);
+		followerRepository.save(Follower.builder()
+				.basedUser(targetUser.toEntity())
+				.targetUser(basedUser.toEntity())
+				.build());
 	}
 	
-	public void cancelFollowing(User fromUser, String toUserId) {		
+	public void cancelFollowing(UserDTO basedUser, UserDTO targetUser) {		
 		
-		User target = userRepository.findByUserId(toUserId);
 		
-		followingRepository.delete(Following.builder().fromUser(fromUser).toUserId(toUserId).build());
-		followerRepository.delete(Follower.builder().fromUserId(target.getUserId()).toUser(fromUser).build());
+		followingRepository.delete(Following.builder()
+									.basedUser(basedUser.toEntity())
+									.targetUser(targetUser.toEntity())
+									.build());		
+	
+		
+		followerRepository.delete(Follower.builder()
+									.basedUser(targetUser.toEntity())
+									.targetUser(basedUser.toEntity())
+									.build());
+	}
+	
+	public List<User> recommendUser(UserDTO loginUser) {
+		List<User> recommendUser = userRepository.findAll();
+		
+		recommendUser.removeAll(toUserList(loginUser.getFollowings()));
+		
+		return recommendUser;
+		
+	}
+	
+	private List<User> toUserList(List<Following> following) {
+		List<User> followingUser = new ArrayList<>();
+		for(int i = 0; i < following.size(); i++) {
+			followingUser.add(following.get(i).getTargetUser());
+		}
+		return followingUser;
 	}
 	
 }

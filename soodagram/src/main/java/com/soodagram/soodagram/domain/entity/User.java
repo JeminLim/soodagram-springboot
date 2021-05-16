@@ -1,8 +1,10 @@
 package com.soodagram.soodagram.domain.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -26,8 +28,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access=AccessLevel.PRIVATE, force=true)
+@NoArgsConstructor(access=AccessLevel.PROTECTED, force=true)
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="tbl_user")
 public class User {
@@ -65,17 +68,21 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private AuthCode authority;
 	
-	@OneToMany(targetEntity=Feed.class, mappedBy="writer")
-	@Column
-	private List<Feed> feeds;
+	@OneToMany(targetEntity=Feed.class, mappedBy="writer", cascade = CascadeType.REMOVE)
+	@Builder.Default
+	private List<Feed> feeds = new ArrayList<>();
 	
-	@OneToMany(targetEntity=Follower.class, mappedBy="toUser")
-	@Column
-	private List<Follower> followers;
+	@OneToMany(targetEntity=Follower.class, mappedBy="toUser", cascade = CascadeType.REMOVE)
+	@Builder.Default
+	private List<Follower> followers = new ArrayList<>();
 	
-	@OneToMany(targetEntity=Following.class, mappedBy="fromUser")
-	@Column
-	private List<Following> following;
+	@OneToMany(targetEntity=Following.class, mappedBy="fromUser", cascade = CascadeType.REMOVE)
+	@Builder.Default
+	private List<Following> followings = new ArrayList<>();
+	
+	@OneToMany(targetEntity=UserLikeFeed.class, mappedBy="currUser", cascade = CascadeType.REMOVE)
+	@Builder.Default
+	private List<UserLikeFeed> likeFeeds = new ArrayList<>();
 	
 	
 	public enum AuthCode {
@@ -84,22 +91,5 @@ public class User {
 	
 	public enum Gender {
 		DEFAULT, MALE, FEMALE, BOTH
-	}
-	
-	@Builder
-	public User(Long userSeq, String userEmail, String userPw, String userName, String userId, String userPhone, Gender userGender, String userImg, String userDesc, AuthCode authority,List<Feed> feeds, List<Follower> followers, List<Following> following) {
-		this.userSeq = userSeq;
-		this.userEmail = userEmail;
-		this.userPw = userPw;
-		this.userName = userName;
-		this.userId = userId;
-		this.userPhone = userPhone;
-		this.userGender = userGender;
-		this.userImg = userImg;
-		this.userDesc = userDesc;
-		this.authority = authority;
-		this.followers = followers;
-		this.following = following;
-		this.feeds = feeds;
 	}
 }

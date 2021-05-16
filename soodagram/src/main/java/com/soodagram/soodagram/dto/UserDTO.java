@@ -1,6 +1,7 @@
 package com.soodagram.soodagram.dto;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.soodagram.soodagram.domain.entity.Feed;
@@ -10,10 +11,15 @@ import com.soodagram.soodagram.domain.entity.User;
 import com.soodagram.soodagram.domain.entity.User.AuthCode;
 import com.soodagram.soodagram.domain.entity.User.Gender;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
 	private Long userSeq;
@@ -26,9 +32,12 @@ public class UserDTO {
 	private String userImg;
 	private String userDesc;
 	private AuthCode authority;
-	private List<Feed> feeds;
-	private List<Follower> followers;
-	private List<Following> following;
+	@Builder.Default
+	private List<Feed> feeds = new ArrayList<>();
+	@Builder.Default
+	private List<Follower> followers = new ArrayList<>();
+	@Builder.Default
+	private List<Following> followings = new ArrayList<>();
 	
 	public User toEntity() {
 		User build = User.builder()
@@ -43,30 +52,8 @@ public class UserDTO {
 				.userDesc(userDesc)
 				.authority(authority)
 				.followers(followers)
-				.following(following)
+				.followings(followings)
 				.build();
 		return build;
-	}
-	
-	@Builder
-	public UserDTO(Long userSeq, String userEmail, String userPw, String userName, 
-			String userId, String userPhone, Gender userGender, 
-			String userImg, String userDesc, AuthCode authority, 
-			List<Follower> followers, List<Following> following,
-			List<Feed> feeds) {
-		this.userSeq = userSeq;
-		this.userEmail = userEmail;
-		this.userPw = userPw;
-		this.userName = userName;
-		this.userId = userId;
-		this.userPhone = userPhone;
-		this.userGender = userGender;
-		this.userImg = userImg;
-		this.userDesc = userDesc;
-		this.authority = authority;
-		this.followers = followers;
-		this.following = following;
-		this.feeds = feeds;
-	}
-	
+	}	
 }

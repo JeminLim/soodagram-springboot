@@ -1,5 +1,6 @@
 package com.soodagram.soodagram.domain.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -11,12 +12,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 @Table(name="tbl_hashtag")
 public class Hashtag {
@@ -29,13 +33,6 @@ public class Hashtag {
 	private String content;
 	
 	@OneToMany(targetEntity=FeedHashtag.class, mappedBy="feed")
-	@Column
-	private List<FeedHashtag> feedHashtag;
-	
-	@Builder
-	public Hashtag (Long hashtagNo, String content, List<FeedHashtag> feedHashtag) {
-		this.hashtagNo = hashtagNo;
-		this.content = content;
-		this.feedHashtag = feedHashtag;
-	}
+	@Builder.Default
+	private List<FeedHashtag> feedHashtag = new ArrayList<>();
 }

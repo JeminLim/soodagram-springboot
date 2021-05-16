@@ -33,7 +33,7 @@ public class Reply{
 	@Column(nullable=false)
 	private String content;
 	
-	@ManyToOne(targetEntity=Feed.class, cascade = CascadeType.MERGE)
+	@ManyToOne(targetEntity=Feed.class, cascade = CascadeType.ALL)
 	@JoinColumn(name="feedNo")
 	private Feed feed;
 	
@@ -41,7 +41,7 @@ public class Reply{
 	@Column
 	private LocalDateTime regDate;
 	
-	@ManyToOne(targetEntity=User.class)
+	@ManyToOne(targetEntity=User.class, cascade = CascadeType.ALL)
 	@JoinColumn(name="userSeq")
 	private User writer;
 	

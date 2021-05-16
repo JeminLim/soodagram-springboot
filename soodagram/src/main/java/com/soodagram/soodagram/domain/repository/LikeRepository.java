@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.soodagram.soodagram.domain.entity.Feed;
 import com.soodagram.soodagram.domain.entity.User;
+import com.soodagram.soodagram.domain.entity.UserLikeFeed;
 
-public interface FeedRepository extends JpaRepository<Feed, Integer>{
-	Feed findByWriter(User writer);
-	int countAllFeedByWriter(User writer);
+public interface LikeRepository extends JpaRepository<UserLikeFeed, Long>{
+	UserLikeFeed findUserLikeFeedByUserAndFeed(Feed feed, User user);	
 }

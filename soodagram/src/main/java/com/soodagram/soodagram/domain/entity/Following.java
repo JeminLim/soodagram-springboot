@@ -28,16 +28,16 @@ public class Following {
 	private Long followingSeq;
 	
 	@Column
-	private String toUserId;
+	private User targetUser;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name="userSeq")
-	private User fromUser;
+	private User basedUser;
 	
 	@Builder
-	public Following(User fromUser, String toUserId) {
-		this.fromUser = fromUser;
-		this.toUserId = toUserId;
+	public Following(User basedUser, User targetUser) {
+		this.basedUser = basedUser;
+		this.targetUser = targetUser;
 	}
 	
 }

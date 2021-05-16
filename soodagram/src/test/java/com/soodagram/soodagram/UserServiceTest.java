@@ -3,6 +3,9 @@ package com.soodagram.soodagram;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.soodagram.soodagram.domain.entity.Follower;
 import com.soodagram.soodagram.domain.entity.Following;
 import com.soodagram.soodagram.domain.entity.User;
+import com.soodagram.soodagram.domain.entity.User.AuthCode;
 import com.soodagram.soodagram.domain.repository.FollowerRepository;
 import com.soodagram.soodagram.domain.repository.FollowingRepository;
 import com.soodagram.soodagram.domain.repository.UserRepository;
@@ -20,7 +24,7 @@ import com.soodagram.soodagram.dto.UserDTO;
 import com.soodagram.soodagram.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class UserRegistTest {
+public class UserServiceTest {
 	
 	@InjectMocks
 	private UserService userService;
@@ -36,12 +40,11 @@ public class UserRegistTest {
 			
 	@Test
 	public void userRegistTest() throws Exception {
-		//given
+		//given		
 		UserDTO userDTO = createUserDTO(1L);
 		when(userRepository.save(userDTO.toEntity())).thenReturn(userDTO.toEntity());	
 		//when
-		User testUser = userService.registUser(userDTO);		
-		
+		User testUser = userService.registUser(userDTO);
 		//then
 		Assertions.assertEquals(userDTO.getUserSeq(), testUser.getUserSeq());
 		Assertions.assertEquals(userDTO.getUserEmail(), testUser.getUserEmail());
@@ -84,19 +87,26 @@ public class UserRegistTest {
 	@Test
 	public void followingTest() throws Exception {
 		//given
-		User user = createUserDTO(1L).toEntity();
+		UserDTO user = createUserDTO(1L);
+		
+		UserDTO targetUser = UserDTO.builder()
+				.userSeq(2L)
+				.userId("sooda2Id")
+				.build();
+		
 		Following following = Following.builder()
-				.fromUser(user)
-				.toUserId("sooda2Id")
+				.basedUser(user.toEntity())
+				.targetUser(targetUser.toEntity())
 				.build();		
 		
+		
 		Follower follower = Follower.builder()
-				.toUser(userRepository.findByUserId("sooda2Id"))
-				.fromUserId(user.getUserId())
+				.basedUser(targetUser.toEntity())
+				.targetUser(user.toEntity())
 				.build();
 				
 		//when
-		 userService.following(user, "sooda2@mail.com");
+		 userService.following(user, targetUser);
 		//then
 		
 		verify(followingRepository).save(following); 
@@ -106,14 +116,48 @@ public class UserRegistTest {
 	@Test
 	public void cancelFollowingTest() throws Exception{
 		//given
-		User user = createUserDTO(1L).toEntity();
-		String targetId = "sooda2Id";
-		//when
-		userService.cancelFollowing(user, targetId);	
+		UserDTO user = createUserDTO(1L);
+		UserDTO targetUser = UserDTO.builder()
+				.userSeq(2L)
+				.userId("sooda2Id")
+				.build();
 		
-		//delete
-		verify(followingRepository).delete(Following.builder().fromUser(user).toUserId(targetId).build());
-		verify(followerRepository).delete(Follower.builder().fromUserId(targetId).toUser(user).build());
+		//when
+		userService.cancelFollowing(user, targetUser);	
+		
+		//then
+		verify(followingRepository).delete(Following.builder().basedUser(user.toEntity()).targetUser(targetUser.toEntity()).build());
+		verify(followerRepository).delete(Follower.builder().basedUser(targetUser.toEntity()).targetUser(user.toEntity()).build());
+	}
+	
+	@Test
+	public void recommendUserTest() throws Exception {
+		//given
+		UserDTO user = createUserDTO(1L);
+		
+		UserDTO targetUser = UserDTO.builder()
+				.userSeq(2L)
+				.userId("sooda2Id")
+				.build();
+		
+		Following following = Following.builder()
+				.basedUser(user.toEntity())
+				.targetUser(targetUser.toEntity())
+				.build();
+		user.getFollowings().add(following);
+		
+		List<User> userList = new ArrayList<>();
+		userList.add(user.toEntity());
+		for(Long i = 2L; i < 5; i++) {
+			userList.add(createUserDTO(i).toEntity());
+		}
+		when(userRepository.findAll()).thenReturn(userList);
+		
+		//when
+		List<User> recommendUser = userService.recommendUser(user);
+		
+		//then
+		Assertions.assertTrue(recommendUser.size() > 0);
 	}
 	
 	private UserDTO createUserDTO(Long fakeUserSeq) {
