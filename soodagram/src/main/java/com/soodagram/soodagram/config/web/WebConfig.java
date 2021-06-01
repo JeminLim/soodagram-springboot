@@ -20,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer{
 	private LoginInterceptor loginInterceptor;
 	
 	@Autowired
-	private LoginAfterInterceptor loginAfterInterceptor;	
+	private LoginAfterInterceptor loginAfterInterceptor;		
 	
 	@Bean
 	public CommonsMultipartResolver multipartResolver() {
@@ -34,12 +34,14 @@ public class WebConfig implements WebMvcConfigurer{
 	public HiddenHttpMethodFilter httpMethodFilter() {
 		HiddenHttpMethodFilter hiddenFilter = new HiddenHttpMethodFilter();
 		return hiddenFilter;
-	}
-	
+	}	
 	
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/").setViewName("/feed/feed");
+		registry.addViewController("/regist").setViewName("/user/register");
+		registry.addViewController("/login").setViewName("/user/login");
+		registry.addViewController("/profile").setViewName("/profile/profileUpdate");	
+		registry.addViewController("/logout").setViewName("/user/logout");
 	}
 	
 	@Override 
@@ -53,6 +55,8 @@ public class WebConfig implements WebMvcConfigurer{
 	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/**").addResourceLocations("classpath:/static/", "classpath:/templates/");
 	}
+	
+	
 	
 	
 }

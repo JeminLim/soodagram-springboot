@@ -33,7 +33,7 @@ public class Reply{
 	@Column(nullable=false)
 	private String content;
 	
-	@ManyToOne(targetEntity=Feed.class, cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="feedNo")
 	private Feed feed;
 	
@@ -41,17 +41,29 @@ public class Reply{
 	@Column
 	private LocalDateTime regDate;
 	
-	@ManyToOne(targetEntity=User.class, cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="userSeq")
-	private User writer;
+	private Account writer;
 	
 	@Builder
-	public Reply(Long replyNo, String content, Feed feed, User writer) {
+	public Reply(Long replyNo, String content, Feed feed, Account writer) {
 		this.replyNo = replyNo;
 		this.content = content;
 		this.feed = feed;
 		this.writer = writer;
 	}
 	
+	
+	public void addReply(Feed feed, Account writer) {
+		this.feed = feed;
+		this.writer = writer;
+		feed.getReplies().add(this);
+		writer.getWrittenReplies().add(this);
+	}
+	
+	public void removeReply(Feed feed, Account account) {
+		feed.getReplies().remove(this);
+		account.getWrittenReplies().remove(this);
+	}
 	
 }

@@ -43,4 +43,14 @@ public class FeedFile{
 		this.filePath = filePath;
 		this.feed = feed;
 	}
+	
+	public void addFile(Feed feed) {
+		this.feed = feed;
+		feed.getFiles().add(this);
+	}
+	
+	public void removeFile(Feed feed) {
+		feed.getFiles().remove(this);
+	}
+	
 }

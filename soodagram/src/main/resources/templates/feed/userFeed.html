@@ -18,25 +18,25 @@
             <div class="col-md-2"></div>
             <!-- Profile-img -->      
             <div class="col-md-2">            
-              <img th:src="${targetUser.userImg}" class="rounded-circle" height="160" alt="Avatar" id="profileImg" />
+              <img th:src="${targetUser.profileImg}" class="rounded-circle" height="160" alt="Avatar" id="profileImg" />
             </div>
             <!-- Profile abstract -->
             <div class="col-md-7 container-fluid">
               <div class="col-md-12 userInfo">
-                <div class="col-md-3" style="font-size: 30px;"><span th:text="${targetUser.userId}">타겟유저아이디</span></div>
+                <div class="col-md-3" style="font-size: 30px;"><span th:text="${targetUser.accountId}">타겟유저아이디</span></div>
                 <div class="col-md-4" style="margin-top: 5px;"> 
-                	<button th:if="${#lists.contains(userFollowingList, targetUser)}" type="button" th:id="'followBtn_' + ${targetUser.userEmail}" class="followBtnAcc btn btn-default">팔로잉</button>
-                	<button th:unless="${#lists.contains(userFollowingList, targetUser)}" type="button" th:id="'followBtn_' + ${targetUser.userEmail}" class="followBtnAcc btn btn-primary">팔로우</button> 
+                	<button th:if="${#sets.contains(session.login.followings, targetUser)}" type="button" th:id="'followBtn_' + ${targetUser.accountEmail}" class="followBtnAcc btn btn-default">팔로잉</button>
+                	<button th:unless="${#sets.contains(session.login.followings, targetUser)}" type="button" th:id="'followBtn_' + ${targetUser.accountEmail}" class="followBtnAcc btn btn-primary">팔로우</button> 
                	 </div>                              
               </div>
               <div class="col-md-12 userInfo">
-                <span class="userLog feedNum" th:text="|게시물 ${#lists.size(feedList)}|">게시물</span>              
-                <button type="button" class="userLog followBtn" id="followBtn" th:text="|팔로우 ${#lists.size(followingList)}|">팔로우</button>              
-                <button type="button" class="userLog followBtn" id="followerBtn" th:text="|팔로워 ${#lists.size(followerList)}|">팔로워</button>            
+                <span class="userLog feedNum" th:text="|게시물 ${#lists.size(targetUser.writtenFeed)}|">게시물</span>              
+                <button type="button" class="userLog followBtn" id="followBtn" th:text="|팔로우 ${#sets.size(targetUser.followers)}|">팔로우</button>              
+                <button type="button" class="userLog followBtn" id="followerBtn" th:text="|팔로워 ${#sets.size(targetUser.followings)}|">팔로워</button>            
               </div>
               <div class="col-md-12 userInfo">
-                <span class="profile" th:text="${targetUser.userName}"> 유저 이름 </span>
-                <span class="desc" th:text="${targetUser.userDesc}"> 유저 설명 </span>
+                <span class="profile" th:text="${targetUser.accountName}"> 유저 이름 </span>
+                <span class="desc" th:text="${targetUser.description}"> 유저 설명 </span>
               </div>
             </div>
           </div> 
@@ -52,11 +52,11 @@
           </div>
         </div>
         
-  	   <div class="row uploadedFeedRow" th:if="${#lists.size(feedList) > 0}">
+  	   <div class="row uploadedFeedRow" th:if="${#lists.size(targetUser.writtenFeed) > 0}">
        	 <div class="container-fluid">
        		<div class="col-md-3"> </div>
        		<div class="myFeedList col-md-7"> 			
-       			<div class="col-md-3 myFeedImg" th:each="feedList: ${feedList}">
+       			<div class="col-md-3 myFeedImg" th:each="feedList: ${targetUser.writtenFeed}">
                		<img class="feedImg" th:src="@{${feedList.fileVO[0].fileName}}"/>      
            		</div> 
        	  	</div>
@@ -79,26 +79,26 @@
             <div class="modal-body">
               <div class="row">
                 <div class="container-fluid text-center modalbodyContainer">	
-	              	<div class="container-fluid follower" th:each="followingList : ${followingList}">
+	              	<div class="container-fluid follower" th:each="followingList : ${targetUser.followings}">
 	                 <!-- 유저 프로필 -->
 	                 <div class="col-md-2"></div>
 	                 <div class="col-md-2 text-center">
-	                   <img th:src="@{${followingList.userImg}}" class="rounded-circle" height="50" alt="Avatar"/> 
+	                   <img th:src="@{${followingList.profileImg}}" class="rounded-circle" height="50" alt="Avatar"/> 
 	                 </div>                 
 	                 <div class="col-md-3">
 	                   <!-- 유저 아이디 -->
 	                   <div class="col-md-12">
-	                     <span th:text="${followingList.userId}"><strong>유저 아이디</strong></span>
+	                     <span th:text="${followingList.accountId}"><strong>유저 아이디</strong></span>
 	                   </div>
 	                   <!-- 유저 이름-->
 	                   <div class="col-md-9">
-	                     <span th:text="${followingList.userName}">유저 이름</span>
+	                     <span th:text="${followingList.accountName}">유저 이름</span>
 	                   </div>
 	                 </div>    
 	                 <!-- 팔로우 버튼 -->
                        <div class="col-md-3">
-                       		<button th:if="${#lists.contains(userFollowingList, followingList)}" type="button" th:id="'followBtn_' + ${followingList.userEmail}" class="followBtnAcc btn btn-default">팔로잉</button> 
-                   	 		<button th:unless="${#lists.contains(userFollowingList, followingList)}" type="button" th:id="'followBtn_' + ${followingList.userEmail}" class="followBtnAcc btn btn-primary">팔로우</button>
+                       		<button th:if="${#sets.contains(session.login.followings, followingList)}" type="button" th:id="'followBtn_' + ${followingList.accountEmail}" class="followBtnAcc btn btn-default">팔로잉</button> 
+                   	 		<button th:unless="${#sets.contains(session.login.followings, followingList)}" type="button" th:id="'followBtn_' + ${followingList.accountEmail}" class="followBtnAcc btn btn-primary">팔로우</button>
                       </div>                                   
 	             	</div>
                 </div>
@@ -126,26 +126,26 @@
             <div class="modal-body">
               <div class="row">
                 <div class="container-fluid text-center modalbodyContainer"> 	
-                    <div class="container-fluid follower" th:each="followerList: ${followerList}">
+                    <div class="container-fluid follower" th:each="followerList: ${targetUser.followers}">
                        <!-- 유저 프로필 -->
                        <div class="col-md-2"></div>
                        <div class="col-md-2 text-center">
-                         <img th:src="@{${followerList.userImg}}" class="rounded-circle" height="50" alt="Avatar"/> 
+                         <img th:src="@{${followerList.profileImg}}" class="rounded-circle" height="50" alt="Avatar"/> 
                        </div>                 
                        <div class="col-md-3">
                          <!-- 유저 아이디 -->
                          <div class="col-md-12">
-                           <span th:text="${followerList.userId}"><strong>팔로워 아이디</strong></span>
+                           <span th:text="${followerList.accountId}"><strong>팔로워 아이디</strong></span>
                          </div>
                          <!-- 유저 이름-->
                          <div class="col-md-12">
-                           <span th:text="${followerList.userName}">팔로워 이름</span>
+                           <span th:text="${followerList.accountName}">팔로워 이름</span>
                          </div>
                        </div>    
                        <!-- 팔로우 버튼 -->
                        <div class="col-md-3">
-                        	<button th:if="${#lists.contains(userFollowingList, followerList)}" type="button" th:id="'followBtn_' + ${followerList.userEmail}" class="followBtnAcc btn btn-default">팔로잉</button> 
-                   	 		<button th:unless="${#lists.contains(userFollowingList, followerList)}" type="button" th:id="'followBtn_' + ${followerList.userEmail}" class="followBtnAcc btn btn-primary">팔로우</button> 
+                        	<button th:if="${#sets.contains(session.login.followings, followerList)}" type="button" th:id="'followBtn_' + ${followerList.accountEmail}" class="followBtnAcc btn btn-default">팔로잉</button> 
+                   	 		<button th:unless="${#sets.contains(session.login.followings, followerList)}" type="button" th:id="'followBtn_' + ${followerList.accountEmail}" class="followBtnAcc btn btn-primary">팔로우</button> 
                       	</div>                        
                    	 </div>
                 </div>
@@ -167,7 +167,7 @@
     		var targetEmail = target.getAttribute("id").substr(10);
     		
     		$.ajax({
-    			url: "/relation/follow",
+    			url: "/user/relation/follow",
     			data: {targetEmail: targetEmail},
     			type: "post",
     			success: function(result) {

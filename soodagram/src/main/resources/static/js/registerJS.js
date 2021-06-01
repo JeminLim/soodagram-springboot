@@ -26,17 +26,15 @@ $(document).ready(function(){
 			type: "POST",
 			async: false,
 			success : function(result) {
-				if(result > 0) {
+				if(result == true) {
 					alert("중복된 Email 입니다");
 					checkEmail = false;
 					btnActivate();			
-				} else if(result == 0){	
+				} else {	
 					checkEmail = true;		
-					btnActivate();
-				} else {
-					alert("Error");
-				}		
+					btnActivate();	
 			  }
+			}
 		});
 	});
 });
@@ -59,16 +57,14 @@ $(document).ready(function(){
 			type: "POST",
 			async: false,
 			success : function(result) {
-				if(result > 0) {
+				if(result == true) {
 					alert("중복된 Id 입니다");
 					checkId = false;
 					btnActivate();			
-				} else if(result == 0){	
+				} else{	
 					checkId = true;		
 					btnActivate();
-				} else {
-					alert("Error");
-				}			
+				}		
 			  }
 		});
 		

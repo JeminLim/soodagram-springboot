@@ -1,9 +1,8 @@
 package com.soodagram.soodagram.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,13 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,8 +30,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.soodagram.soodagram.commons.util.UploadFileUtils;
-import com.soodagram.soodagram.domain.entity.Feed;
-import com.soodagram.soodagram.domain.entity.User;
+import com.soodagram.soodagram.domain.entity.Account;
+import com.soodagram.soodagram.dto.FeedDTO;
 import com.soodagram.soodagram.service.FeedService;
 
 /**
@@ -49,10 +49,11 @@ public class FeedController{
 	
 	private final FeedService feedService;
 	
+	
 	@Autowired
 	public FeedController(FeedService feedService) {
 		this.feedService = feedService;
-	}	
+	}		
 	
 	/**
 	 * 피드 등록
@@ -61,29 +62,17 @@ public class FeedController{
 	 * @return redirect profile page
 	 * @throws Exception
 	 */
-	@PostMapping("/post")
-	public String uploadFeed(Feed feedVO, HttpServletRequest request) throws Exception {
+	@PostMapping(value="/post")
+	public String uploadFeed(@ModelAttribute("feedDTO") FeedDTO feedDTO, HttpServletRequest request) throws Exception {
 		// 작성자(로그인) 유저 정보
 		HttpSession httpSession = request.getSession();
-		User loginUser = (User) httpSession.getAttribute("login");
-		
-		feedVO.setUserEmail(loginUser.getUserEmail());
-		feedVO.setUserVO(loginUser);
-		
-		logger.info("==================Feed Write Info======================");
-		logger.info("Feed writer = " + feedVO.getUserEmail());
-		logger.info("Feed content = " + feedVO.getContent());
-		logger.info("feed image file = " + feedVO.getFiles());
-		logger.info("Feed = " + feedVO.toString());
-		logger.info("=======================================================");
-		
+		Account loginUser = (Account) httpSession.getAttribute("login");				
+		feedDTO.setWriter(loginUser);
 		
 		// 피드 컨텐츠 등록
-		feedService.wrtieFeed(feedVO);
+		feedService.writeFeed(feedDTO.toFeedEntity());
 		
-		
-		
-		return "redirect:/user/" + loginUser.getUserId();
+		return "redirect:/user/" + loginUser.getAccountId();
 	}
 	
 	/**
@@ -167,12 +156,27 @@ public class FeedController{
 	@DeleteMapping("/{feedNo}")
 	@ResponseBody
 	@ResponseStatus(code=HttpStatus.NO_CONTENT)
-	public void deleteFeed(@PathVariable("feedNo") int feedNo, HttpServletRequest request) throws Exception {		
+	public ResponseEntity<String> deleteFeed(@PathVariable("feedNo") Long feedNo, HttpServletRequest request) throws Exception {		
+	
 		try {
 			feedService.deleteFeed(feedNo);		
 			logger.info("feed - " + feedNo + "deleted");
-		} catch(EmptyResultDataAccessException e) {}		
+			return new ResponseEntity<>("delete", HttpStatus.OK);
+		} catch(EmptyResultDataAccessException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}		
 	}	
 	
-	
+	@GetMapping("/feed/{page}")
+	@ResponseBody
+	public ResponseEntity<List<FeedDTO>> getFeed(Model model, HttpServletRequest request, @PathVariable("page") int page) throws Exception {
+		// 현재 로그인 유저 정보		
+		HttpSession httpSession = request.getSession();
+		Account loginUser = (Account) httpSession.getAttribute("login");			
+		
+		List<FeedDTO> followingFeed = feedService.getFollowingFeed(loginUser, page);	
+		
+		return new ResponseEntity<>(followingFeed, HttpStatus.OK);
+	}
 }

@@ -35,4 +35,12 @@ public class Hashtag {
 	@OneToMany(targetEntity=FeedHashtag.class, mappedBy="feed")
 	@Builder.Default
 	private List<FeedHashtag> feedHashtag = new ArrayList<>();
+	
+	@Override
+	public String toString() {
+		return "Hashtag{" +
+				"hashtagNo" + hashtagNo +
+				", content=" + content +
+				", feedHashtag size=" + feedHashtag.size() + "}";
+	}
 }

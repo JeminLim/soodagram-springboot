@@ -17,18 +17,18 @@
 								<span class="fb-login">Facebook으로 로그인</span>
 							</button>										
 							<p class="or"> 또는 </p>
-							<form th:action="@{/regist}" method="post">
+							<form th:action="@{/user/regist}" method="post">
 								<div class="form-group">
-									<input type="email" id="userEmail" class="form-control" placeholder="이메일" name="userEmail">
+									<input type="email" id="accountEmail" class="form-control" placeholder="이메일" name="userEmail">
 								</div>
 								<div class="form-group">
-									<input type="text" id="userName" class="form-control" placeholder="성명" name="userName">
+									<input type="text" id="accountName" class="form-control" placeholder="성명" name="userName">
 								</div>
 								<div class="form-group">
-									<input type="text" id="userId" class="form-control" placeholder="사용자 이름" name="userId">
+									<input type="text" id="accountId" class="form-control" placeholder="사용자 이름" name="userId">
 								</div>
 								<div class="form-group">
-									<input type="password" id="userPw" class="form-control" placeholder="비밀번호" name="userPw">
+									<input type="password" id="accountPw" class="form-control" placeholder="비밀번호" name="userPw">
 								</div>
 								<button type="submit" id="submitBtn" class="btn btn-primary btn-block" disabled>
 									가입

@@ -11,16 +11,14 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service("loginFailHandler")
 public class CustomLoginFailureHandler implements AuthenticationFailureHandler{
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
-
-		
 		
 		if (exception instanceof AuthenticationServiceException) {
 			request.setAttribute("loginFailMsg", "존재하지 않는 사용자 입니다");

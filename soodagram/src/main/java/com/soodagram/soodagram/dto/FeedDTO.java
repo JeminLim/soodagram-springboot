@@ -1,56 +1,66 @@
 package com.soodagram.soodagram.dto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
+
+import com.soodagram.soodagram.domain.entity.Account;
 import com.soodagram.soodagram.domain.entity.Feed;
 import com.soodagram.soodagram.domain.entity.FeedFile;
 import com.soodagram.soodagram.domain.entity.FeedHashtag;
-import com.soodagram.soodagram.domain.entity.Reply;
-import com.soodagram.soodagram.domain.entity.User;
+import com.soodagram.soodagram.domain.entity.LikeFeed;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
-@Builder
+
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
+@ToString
 public class FeedDTO {
 	
 	private Long feedNo;
-	private User writer;
+	private Account writer;
 	private String content;
 	private FeedFile[] files;
 	@Builder.Default
 	private List<FeedHashtag> feedHashtags = new ArrayList<>();
 	@Builder.Default
-	private List<Reply> replies = new ArrayList<>();
+	private List<LikeFeed> likes = new ArrayList<>();
 	
 	public Feed toFeedEntity() {
+		List<FeedFile> fileList = new ArrayList<>(Arrays.asList(files));
 		Feed build = Feed.builder()
 				.feedNo(feedNo)
 				.writer(writer)
 				.content(content)
+				.files(fileList)
 				.build();
 		return build;
+	}	
+	
+	public static FeedDTO of(Feed feed) {
+		FeedFile[] fileArr = feed.getFiles().toArray(new FeedFile[feed.getFiles().size()]);
+		
+		ModelMapper modelMapper = new ModelMapper();
+		final FeedDTO dto = modelMapper.map(feed, FeedDTO.class);
+		
+		dto.setFiles(fileArr);
+		return dto;
 	}
 	
-	public List<FeedFile> toFeedFileEntity(Feed feed) {
-		List<FeedFile> toList = new ArrayList<>();
-		for(FeedFile file: files) {
-			FeedFile build = FeedFile.builder()
-					.fileName(file.getFileName())
-					.filePath(file.getFilePath())
-					.feed(feed)
-					.build();
-			toList.add(build);
-		}
-				
-		return toList;
+	public static List<FeedDTO> of(List<Feed> feedList) {
+		return feedList.stream()
+				.map(FeedDTO::of)
+				.collect(Collectors.toList());
 	}
-	
 	
 }

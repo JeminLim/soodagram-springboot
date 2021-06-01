@@ -64,15 +64,13 @@ function getFeeds(curPage) {
 	var feedList = [];
 	
 	$.ajax({
-		url: "/feeds/" + curPage,
+		url: "/feed/" + curPage,
 		data: {page : curPage},
 		dataType:"json",
 		type: "GET",
 		async: false,
 		success: function(result) {
-			if(result.code === "success"){
 				feedList = result.followingFeed;
-			}
 		},
 		error: function(request, status, error) {
 			alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);

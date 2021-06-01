@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.soodagram.soodagram.domain.entity.Feed;
+import com.soodagram.soodagram.domain.entity.FeedHashtag;
 import com.soodagram.soodagram.service.SearchService;
 
 /**
@@ -46,9 +46,7 @@ public class SearchController {
 	@PostMapping("")
 	@ResponseBody
 	public Map<String, Object> search(@RequestParam("keyword") String keyword) throws Exception {
-		
-		return searchService.search(keyword);
-		
+		return searchService.search(keyword);		
 	}
 	
 	/**
@@ -59,15 +57,12 @@ public class SearchController {
 	 * @throws Exception
 	 */
 	@GetMapping("/{hashtag}")
-	public String getHashtagFeed(@PathVariable("hashtag") String hashtag, Model model) throws Exception {
+	public String getHashtagFeed(@PathVariable("hashtag") String content, Model model) throws Exception {
 		
-		hashtag = URLDecoder.decode(hashtag, "UTF-8");
+		content = URLDecoder.decode(content, "UTF-8");
 		
-		logger.info(hashtag + " searched");
-		
-		List<Feed> searchedFeed = searchService.getHashtagFeed(hashtag);
-		model.addAttribute("searchedFeed", searchedFeed);
-		model.addAttribute("hashtagName", hashtag);
+		List<FeedHashtag> feedHashtag = searchService.getHashtagFeed(content);
+		model.addAttribute("feedHashtag", feedHashtag);
 		
 		
 		return "/feed/hashtagFeed";

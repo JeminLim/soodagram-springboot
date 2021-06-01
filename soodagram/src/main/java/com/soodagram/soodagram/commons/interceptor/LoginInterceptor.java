@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.util.WebUtils;
 
-import com.soodagram.soodagram.domain.entity.User;
-import com.soodagram.soodagram.service.UserService;
+import com.soodagram.soodagram.domain.entity.Account;
+import com.soodagram.soodagram.service.AccountService;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
@@ -21,26 +21,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 	private static final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
 	
 	@Autowired
-	private UserService userService;
+	private AccountService accountService;
 	
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		
-		HttpSession httpSession = request.getSession();
-		Cookie loginCookie = WebUtils.getCookie(request, "loginCookie");
-		
-		if(loginCookie != null) {
-			User userVO = userService.checkLoginBefore(loginCookie.getValue());
-			if(userVO != null) {
-				httpSession.setAttribute("login", userVO);
-			}
-		}
-		
-		if(httpSession.getAttribute("login") == null) {
-			logger.info("current user is not logged");
-			response.sendRedirect("/login");
-			return false;
-		} 		
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {		
 		
 		return true;		
 	}	

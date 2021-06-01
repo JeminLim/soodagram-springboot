@@ -37,19 +37,19 @@
 	      <article class="rightContent border-grey col-md-9">
 	        <div class="loginUser displayflex">
 	          <aside class="leftSection col-md-3">
-	            <img th:src="@{${session.login.userImg}}" class="loginUserImg" height="50"/>
+	            <img th:src="@{${session.login.profileImg}}" class="loginUserImg" height="50"/>
 	          </aside>
 	          <div class="rightSection col-md-9">
-	            <p id="userId" th:text="${session.login.userId}">로그인 유저 아이디</p>
+	            <p id="userId" th:text="${session.login.accountId}">로그인 유저 아이디</p>
 	          </div>
 	        </div>
-	        <form th:action="@{/profile}" role="form" id="userInfoForm" method="post" >
+	        <form th:action="@{/user/profile}" role="form" id="userInfoForm" method="post" >
 	          <div class="row displayflex">
 	            <aside class="leftSection col-md-3">
 	              <label>이름</label>
 	            </aside>
 	            <div class="rightSection col-md-9">
-	              <input class="infoInput" type="text" placeHolder="이름" name="userName" id="inputUserName" th:value="${session.login.userName}"/>
+	              <input class="infoInput" type="text" placeHolder="이름" name="accountName" id="inputUserName" th:value="${session.login.accountName}"/>
 	              <div class="additionalInfo"><span><small>사람들의 이름, 별명 또는 비지니스 이름 등 회원님의 알려진 이름을 사용하여 회원님의 계정을 찾을 수 있도록 도와주세요</small></span></div>
 	            </div>
 	          </div>
@@ -59,7 +59,7 @@
 	              <label>사용자 이름</label>
 	            </aside>
 	            <div class="rightSection col-md-9">
-	              <input class="infoInput" type="text" placeHolder="사용자 이름" name="userId" id="inputUserId" th:value="${session.login.userId}"/>
+	              <input class="infoInput" type="text" placeHolder="사용자 이름" name="accountId" id="inputUserId" th:value="${session.login.accountId}"/>
 	              <div class="additionalInfo"><span><small>대부분의 경우 14일 이내에 사용자 이름을 다시 ${loginUser.userId}(으)로 변경할 수 있습니다.</small></span></div>
 	            </div>
 	          </div>
@@ -69,7 +69,7 @@
 	              <label>소개</label>
 	            </aside>
 	            <div class="rightSection col-md-9">
-	              <textarea class="infoInput" name="userDesc" id="inputUserDesc" th:text="${session.login.userDesc}"></textarea>
+	              <textarea class="infoInput" name="description" id="inputUserDesc" th:text="${session.login.description}"></textarea>
 	              <div class="additionalInfo">
 	                <p class="desc"><strong>개인정보</strong></p>
 	                <p class="desc descInfo">비지니스나 반려동물 등에 사용된 계정인 경우에도 회원님의 개인정보를 입력하세요. 공개 프로필에는 포함되지 않습니다.</p>
@@ -82,7 +82,7 @@
 	              <label>이메일</label>
 	            </aside>
 	            <div class="rightSection col-md-9">
-	              <input class="infoInput" type="text" placeHolder="이메일" name="userEmail" id="inputUserEmail" th:value="${session.login.userEmail}" readonly/>
+	              <input class="infoInput" type="text" placeHolder="이메일" name="accountEmail" id="inputUserEmail" th:value="${session.login.accountEmail}" readonly/>
 	            </div>
 	          </div>
 	
@@ -91,7 +91,7 @@
 	              <label>전화번호</label>
 	            </aside>
 	            <div class="rightSection col-md-9">
-	              <input class="infoInput" type="text" placeHolder="전화번호" name="userPhone" id="inputUserPhone" th:value="${session.login.userPhone}"/>
+	              <input class="infoInput" type="text" placeHolder="전화번호" name="phone" id="inputUserPhone" th:value="${session.login.phone}"/>
 	            </div>
 	          </div>
 	
@@ -100,7 +100,7 @@
 	              <label>성별</label>
 	            </aside>
 	            <div class="rightSection col-md-9">
-	              <select name="userGender" id="inputUserGender">
+	              <select name="gender" id="inputUserGender">
 	                <option value="성별">성별</option>
 	                <option value="남">남</option>
 	                <option value="여">여</option>
@@ -127,7 +127,7 @@
     		
     		var form = document.getElementById('userInfoForm');
     		var formData = new FormData(form);
-    		formData.set("userGender", gender);
+    		formData.set("gender", gender);
     		
     		form.submit();    		
     		
@@ -137,7 +137,7 @@
     	$(document).ready(function() {
     		/*<![CDATA[*/
     		//성별 정보 표시
-    		$("#inputUserGender option[value='[[${loginUser.userGender}]]']").attr("selected", true);
+    		$("#inputUserGender option[value='[[${loginUser.gender}]]']").attr("selected", true);
     		/*]]>*/
     	});
     	

@@ -13,20 +13,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 
-import com.soodagram.soodagram.service.UserLoginService;
+import com.soodagram.soodagram.service.AccountService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-	@Autowired
-	private UserLoginService userLoginService;
 	
 	@Autowired
 	private CustomLoginSuccessHandler customLoginSuccessHandler;
 	
 	@Autowired
 	private CustomLoginFailureHandler customLoginFailureHandler;
+	
+	@Autowired
+	private AccountService userSerivce;
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -40,18 +40,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception{
-		http.authorizeRequests().antMatchers("/css/**", "/dist/**", "/fonts/**", "/images/**", "/js/**").permitAll();
-		http.authorizeRequests().antMatchers("/login","/reigst").permitAll();
-		http.authorizeRequests().antMatchers("/", "/**").authenticated();
-		http.formLogin().loginPage("/login").usernameParameter("userEmail").passwordParameter("userPw")
-			.successHandler(customLoginSuccessHandler)
-			.failureHandler(customLoginFailureHandler);
-		http.logout().logoutSuccessUrl("/login");
+		http.authorizeRequests().antMatchers("/css/**", "/dist/**", "/fonts/**", "/images/**", "/js/**").permitAll()
+								.antMatchers("/login","/regist", "/user/regist/**", "/login/**").permitAll()
+								.anyRequest().authenticated()
+								.and()
+								.formLogin().loginPage("/login").loginProcessingUrl("/doLogin").usernameParameter("userEmail").passwordParameter("userPw")
+								.successHandler(customLoginSuccessHandler)
+								.failureHandler(customLoginFailureHandler)
+								.permitAll()
+								.and().logout().logoutSuccessUrl("/login")
+								.and().httpBasic();
 	}
 	
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userLoginService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(userSerivce).passwordEncoder(passwordEncoder());
 	}
 	
 	@Override

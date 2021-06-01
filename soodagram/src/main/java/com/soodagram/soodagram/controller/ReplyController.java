@@ -1,10 +1,6 @@
 package com.soodagram.soodagram.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -12,14 +8,16 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.soodagram.soodagram.domain.entity.Reply;
-import com.soodagram.soodagram.domain.entity.User;
+import com.soodagram.soodagram.domain.entity.Account;
+import com.soodagram.soodagram.dto.ReplyDTO;
+import com.soodagram.soodagram.service.FeedService;
 import com.soodagram.soodagram.service.ReplyService;
 
 /**
@@ -33,10 +31,12 @@ import com.soodagram.soodagram.service.ReplyService;
 public class ReplyController {
 	
 	private final ReplyService replyService;
+	private final FeedService feedService;
 	
 	@Autowired
-	public ReplyController(ReplyService replyService) {
+	public ReplyController(ReplyService replyService, FeedService feedService) {
 		this.replyService = replyService;
+		this.feedService = feedService;
 	}
 	
 	/**
@@ -49,20 +49,17 @@ public class ReplyController {
 	 */
 	@PostMapping("/{feedNo}")
 	@ResponseBody
-	public List<Reply> writeReply(@PathVariable("feedNo") int feedNo, Reply replyVO, HttpServletRequest request) throws Exception{
+	public ReplyDTO writeReply(@PathVariable("feedNo") Long feedNo, @ModelAttribute("ReplyDTO") ReplyDTO replyDTO, HttpServletRequest request) throws Exception{
 		
 		// 이용자 식별
 		HttpSession httpSession = request.getSession();
-		User loginUser = (User) httpSession.getAttribute("login");
-		replyVO.setUserEmail(loginUser.getUserEmail());
-		replyVO.setUserId(loginUser.getUserId());
+		Account loginUser = (Account) httpSession.getAttribute("login");
+		replyDTO.setWriter(loginUser);
+		replyDTO.setFeed(feedService.getFeed(feedNo));
 		
-		replyService.writeReply(replyVO);
+		replyService.writeReply(replyDTO.toEntity());
 		
-		List<Reply> reply = new ArrayList<>();
-		reply.add(replyVO);
-		
-		return reply;
+		return replyDTO;
 		
 			
 	}
@@ -77,19 +74,8 @@ public class ReplyController {
 	 */
 	@GetMapping("/{feedNo}")
 	@ResponseBody
-	public Map<String, Object> getReply(@PathVariable("feedNo") int feedNo, @RequestParam("loadNum")int loadNum, @RequestParam("curPage") int curPage) throws Exception {
-		Map<String, Object> getInput = new HashMap<>();
-		getInput.put("feedNo", feedNo);
-		getInput.put("loadNum", loadNum);
-		getInput.put("curPage", curPage);
-		
-		List<Reply> reply = replyService.getReply(getInput);
-		Collections.reverse(reply);
-		Map<String, Object> result = new HashMap<>();
-		result.put("code", "success");
-		result.put("replyList", reply);
-				
-		return result;
+	public List<ReplyDTO> getReply(@PathVariable("feedNo") Long feedNo, @RequestParam("curPage") int curPage) throws Exception {						
+		return replyService.getReplies(feedNo, curPage);
 	}
 	
 }

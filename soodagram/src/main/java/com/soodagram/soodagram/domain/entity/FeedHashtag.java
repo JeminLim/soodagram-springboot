@@ -1,43 +1,41 @@
 package com.soodagram.soodagram.domain.entity;
 
-import javax.persistence.CascadeType;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Data
+@Getter
+@Setter
 @Entity
-@NoArgsConstructor(access=AccessLevel.PRIVATE)
+@EqualsAndHashCode(of= {"hashtag", "feed"})
 @Table(name="tbl_feed_hashtag")
 public class FeedHashtag{
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long feedHashtagSeq;
-	
-	@ManyToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name="hashtagNo")
-	private Hashtag hashtag;	
-	
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@EmbeddedId
+	private FeedHashtagId id;
+
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="feedNo")
 	private Feed feed;
 	
-	@Builder
-	public FeedHashtag(Long feedHashtagSeq, Hashtag hashtag, Feed feed) {
-		this.feedHashtagSeq = feedHashtagSeq;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="hashtagNo")
+	private Hashtag hashtag;	
+	
+	
+	public FeedHashtag() {}
+	public FeedHashtag(Feed feed, Hashtag hashtag) {
 		this.hashtag = hashtag;
 		this.feed = feed;
+		this.id = new FeedHashtagId(hashtag.getHashtagNo(), feed.getFeedNo());
 	}
 	
 }
