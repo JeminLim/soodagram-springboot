@@ -1,7 +1,7 @@
 package com.soodagram.soodagram.config.security;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.NoSuchElementException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -12,19 +12,19 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import com.soodagram.soodagram.user.domain.UserVO;
-import com.soodagram.soodagram.user.repository.UserDAO;
+import com.soodagram.soodagram.domain.entity.Account;
+import com.soodagram.soodagram.domain.repository.AccountRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
+@Service("loginSuccessHandler")
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 
 	@Autowired
-	private UserDAO userDAO;
+	private AccountRepository accountRepository;
 	
 
 	@Override
@@ -32,7 +32,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		HttpSession session = request.getSession();
 		// 로그인 된 유저 정보
-		UserVO userVO = userDAO.getLoginUser(authentication.getName());
+		Account userVO = accountRepository.findByAccountEmail(authentication.getName()).orElseThrow(()-> new NoSuchElementException());
+		
 		// 세션에 유저 정보 저장
 		session.setAttribute("login", userVO);
 		// 로그인 쿠키 생성, Remember me 활용으로 대체 예정
@@ -40,8 +41,6 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		Cookie loginCookie = new Cookie("loginCookie", session.getId());
 		int amount = 60 * 60 * 24 * 7;
 		loginCookie.setMaxAge(amount);
-		Date sessionLimit = new Date(System.currentTimeMillis() + (1000 * amount));
-		userDAO.keepLogin(userVO.getUserEmail(), session.getId(), sessionLimit);
 		response.addCookie(loginCookie);
 		response.sendRedirect("/");
 	}

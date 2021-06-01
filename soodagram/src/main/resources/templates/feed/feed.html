@@ -17,11 +17,11 @@
         <!-- Story section -->
           <section class="story-container">              
             <ul>
-	            <li th:each="followingList: ${followingList}">
+	            <li th:each="followings: ${session.login.followings}">
 	            	<div class="story text-center">
-	                    <img th:src="@{${followingList.userImg}}" class="rounded-circle gradient-border" height="50" alt="Avatar" /> 
+	                    <img th:src="@{${followings.profileImg}}" class="rounded-circle gradient-border" height="50" alt="Avatar" /> 
 	            	</div>  
-	                <span th:text="${followingList.userId}"><small>following user id place</small></span>          
+	                <span th:text="${followings.accountId}"><small>following user id place</small></span>          
 	            </li>
             </ul>              
           </section>
@@ -37,15 +37,15 @@
 	            <div class="container-fluid">
 	              <div class="row">
 	                <div class="col-md-4">
-	                  <img th:src="@{${session.login.userImg}}" class="rounded-circle" height="60" alt="Avatar" />
+	                  <img th:src="@{${session.login.profileImg}}" class="rounded-circle" height="60" alt="Avatar" />
 	                </div>
 	                <div class="col-md-7">
 	                  <ul>
 	                    <li>
-	                      <p class="ml-3 text-dark mb-0 mt-1" th:text="${session.login.userId}"><strong>user Id place</strong></p>
+	                      <p class="ml-3 text-dark mb-0 mt-1" th:text="${session.login.accountId}"><strong>user Id place</strong></p>
 	                    </li>
 	                    <li>
-	                      <span class="ml-3 text-dark" th:text="${session.login.userName}">user name place</span>
+	                      <span class="ml-3 text-dark" th:text="${session.login.accountName}">user name place</span>
 	                    </li>
 	                  </ul>
 	                </div>
@@ -61,12 +61,12 @@
               <!-- Suggested users -->   
               <div class="row" th:each="recommendList: ${recommendList}">
                   <div class="col-md-2 sugUserImg">
-                    <img th:src="@{${recommendList.userImg}}" class="rounded-circle mt-2" height="40" alt="Avatar"/>
+                    <img th:src="@{${recommendList.profileImg}}" class="rounded-circle mt-2" height="40" alt="Avatar"/>
                   </div>
                   <div class="col-md-5">
                     <ul class="ml-1 px-3 mt-1 list-unstyled">
                       <li>
-                        <small class="user-name" th:text="${recommendList.userId}"><strong>recommend user id</strong></small>
+                        <small class="user-name" th:text="${recommendList.accountId}"><strong>recommend user id</strong></small>
                       </li>
                       <li>
                         <span class="user-name">수다그램 추천</span>
@@ -74,7 +74,7 @@
                     </ul>
                   </div>
                   <div class="col-md-2">
-                    <button type="button" th:id="'followBtn_' + ${recommendList.userEmail}" class="followBtn" style="border: none; background-color: white; color: blue; outline: none;">팔로우</button>
+                    <button type="button" th:id="'followBtn_' + ${recommendList.accountEmail}" class="followBtn" style="border: none; background-color: white; color: blue; outline: none;">팔로우</button>
                   </div>	                  
               </div>
            </section>
@@ -96,12 +96,12 @@
 	                      <div class="col-md-11">
 	                        <div class="author">
 	                          <img
-	                            th:src="@{{{userVO.userImg}}}"
+	                            th:src="@{{{writer.profileImg}}}"
 	                            class="rounded-circle authorUser"
 	                            height="40"
 	                            alt="Avatar"                              
 	                          />
-	                          <a th:href="@{/user/{{userVO.userId}}}" class="authorUser">
+	                          <a th:href="@{/user/{{writer.accountId}}}" class="authorUser">
 	                            <strong>{{userVO.userId}}</strong>                                
 	                          </a>
 	                        </div>
@@ -116,7 +116,7 @@
 	                 <div id="feedCarousel{{feedNo}}" class="carousel slide" data-ride="carousel" data-interval="false">	                 		                     
 		                     <!-- indicators -->
 		                     <ol class="carousel-indicators">	                 
-								{{#each fileVO}} 
+								{{#each files}} 
 									{{#if @first}}
 										<li data-target="#feedCarousel{{../feedNo}}" data-slide-to="{{@index}}" class="active"></li>
 									{{else}}
@@ -127,14 +127,14 @@
 		                     
 		                     <!-- Wrapper for slides -->
 		                     <div class="carousel-inner">
-							 {{#each fileVO}}
+							 {{#each files}}
 		                        {{#if @first}}
 		                       		<div class="item active" >
-					                   <img class="feedImg" th:src="@{{{fileName}}}">
+					                   <img class="feedImg" th:src="@{{{filePath}}{{fileName}}}">
 					                </div>
 								{{else}}
 									<div class="item">
-					                   <img class="feedImg" th:src="@{{{fileName}}}">
+					                   <img class="feedImg" th:src="@{{{filePath}}{{fileName}}}">
 					                 </div>	  
 								{{/if}}
 		                     {{/each}}                    
@@ -175,14 +175,14 @@
 	                    <div class="row mt-1">
 	                      <div class="col-md-12">
 	                        <!-- 좋아요 표시 -->
-	                        <span id="totalLike_{{feedNo}}"><small><strong>좋아요 {{totalLike}}개</strong></small></span>
+	                        <span id="totalLike_{{feedNo}}"><small><strong>좋아요 {{${#lists.size(likeAccounts)}}}개</strong></small></span>
 	                      </div>
 	                    </div>
 	                    <!-- Content -->
 	                    <div class="row">
 	                      <div class="col-md-12">
 	                        <p>
-	                          <strong class="text-dark">{{userVO.userId}}</strong>
+	                          <strong class="text-dark">{{writer.accountId}}</strong>
 	                          {{{content}}} 
 	                        </p>
 	                      </div>
@@ -230,7 +230,7 @@
 	<script id="replyTemplate" type="text/x-handlerbars-template">
 		{{#each replyList}}
 			<li>
-				<p class="reply"><strong>{{userId}}</strong>{{content}}</p>
+				<p class="reply"><strong>{{writer.accountId}}</strong>{{content}}</p>
 			</li>
 		{{/each}}
 	</script>
@@ -244,7 +244,7 @@
 	    	var targetEmail = target.getAttribute("id").substr(10);
 	    	
 	    	$.ajax({
-	    		url: "/relation/follow",
+	    		url: "/user/relation/follow",
 	    		data: {targetEmail: targetEmail},
 	    		type: "post",
 	    		success: function(result) {
@@ -267,7 +267,7 @@
 	    	var targetFeedNo = target.getAttribute("id").substr(8);
 	    	
 	    	$.ajax({
-	    		url: "/relation/like",
+	    		url: "/user/relation/like",
 	    		data: { feedNo : targetFeedNo},
 	    		type: "post",
 	    		success: function(result) {

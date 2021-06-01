@@ -48,10 +48,10 @@
 	                            <!-- Avatar -->
 	                            <li class="dropdown">
 	                              <a href="#" class="dropdown-toggle" id="navDropdownMenu" role="button" data-toggle="dropdown" aria-hashpopup="ture" aria-expanded="false">
-	                                <img th:src="@{${session.login.userImg}}" class="rounded-circle" height="25" loading="lazy" />
+	                                <img th:src="@{${session.login.profileImg}}" class="rounded-circle" height="25" loading="lazy" />
 	                              </a>
 	                              <ul class="dropdown-menu" aria-labelledby="navDropdownMenu">
-	                                <li><a class="dropdown-item" th:href="@{/user/{userId}(userId = ${session.login.userId})}">프로필</a></li>
+	                                <li><a class="dropdown-item" th:href="@{/user/{userId}(userId = ${session.login.accountId})}">프로필</a></li>
 	                                <li><a class="dropdown-item" href="#">설정</a></li>
 	                                <li><a class="dropdown-item" th:href="@{/logout}">로그아웃</a></li>
 	                              </ul>
@@ -67,14 +67,14 @@
 	
 	<script id="resultUserTemplate" type="text/x-handlerbars-template">
 		{{#each searchedUser}}		
-   			<a th:href="@{/user/{{userId}}}" class="searchUserList col-md-12">	
+   			<a th:href="@{/user/{{accountId}}}" class="searchUserList col-md-12">	
 				<div class="col-md-3 searchedUserImg">		
-					<img th:src="@{{{userImg}}}" class="rounded-circle" height="40" loading="lazy" />		   		
+					<img th:src="@{{{profileImg}}}" class="rounded-circle" height="40" loading="lazy" />		   		
 				</div>
 				<div class="col-md-8">
 					<ul class="justify-content-left">
-						<li>{{userId}}</li>
-						<li>{{userName}}</li>
+						<li>{{accountId}}</li>
+						<li>{{accountName}}</li>
 					</ul>
 				</div>
 			</a>
@@ -88,11 +88,11 @@
 				</div>
 				<div class="col-md-8">
 					<ul class="justify-content-left">
-						<li>{{hashtagName}}</li>
-						<li>{{tagCount}}</li>
+						<li>{{hashtag.content}}</li>
+						<li>{{#lists.size(searchedTag)}}</li>
 					</ul>
 				</div>
-				<input type="hidden" value={{hashtagName}} class="hashtagNameVal"/>
+				<input type="hidden" value={{hashtag.content}} class="hashtagNameVal"/>
        		 </a>
 		{{/each}}
 	</script>		 

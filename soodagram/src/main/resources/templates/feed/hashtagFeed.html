@@ -23,8 +23,8 @@
 	            <!-- Profile abstract -->
 	            <div class="col-md-7 container-fluid">
 	              <div class="col-md-12 userInfo">
-	                <p class="profile" style="font-size: 2em" th:text="${hashtagName}">hashtag name</p>
-	                <p class="numFeeds" style="font-size: 1.5em" th:utext="'게시물 <strong>' + ${#lists.size(searchedFeed)} + '</strong>'">게시물</p>                       
+	                <p class="profile" style="font-size: 2em" th:text="${feedHashtag[0].hashtag.content}">hashtag name</p>
+	                <p class="numFeeds" style="font-size: 1.5em" th:utext="'게시물 <strong>' + ${#lists.size(feedHashtag)} + '</strong>'">게시물</p>                       
 	              </div>
 	            </div>
 	          </div> 
@@ -37,12 +37,12 @@
 	            <span style="color: black; font-size: 1.5em">인기 게시물</span>
 	          </div>
 	        </div>	        
-	       	  <div class="row uploadedFeedRow" th:if="${#lists.size(searchedFeed) > 0}">
+	       	  <div class="row uploadedFeedRow" th:if="${#lists.size(feedHashtag) > 0}">
 		       	 <div class="container-fluid">
 		       		<div class="col-md-3"> </div>
 		       		<div class="myFeedList col-md-7"> 			
-	        			<div class="col-md-3 myFeedImg" th:each="searchedFeed: ${searchedFeed}">
-	                  		<img class="feedImg" th:src="@{${searchedFeed.fileVO[0].fileName}}"/>      
+	        			<div class="col-md-3 myFeedImg" th:each="feedHashtag: ${feedHashtag}">
+	                  		<img class="feedImg" th:src="@{${feedHashtag.feed.files[0].filePath}${feedHashtag.feed.files[0].fileName}}"/>      
 	              		</div>     
 	        	  	</div>
 	       	  	 </div>
